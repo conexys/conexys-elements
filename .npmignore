@@ -1,0 +1,21 @@
+# Archivos de desarrollo
+.git/
+.github/
+.vscode/
+node_modules/
+src/
+.babelrc
+.eslintrc
+.gitignore
+rollup.config.js
+yarn-error.log
+package-lock.json
+
+# Tests
+__tests__/
+coverage/
+jest.config.js
+
+# Ejemplos y docs de desarrollo
+examples/
+docs/
