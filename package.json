@@ -1,6 +1,6 @@
 {
   "name": "conexys-elements",
-  "version": "1.0.16",
+  "version": "1.0.24",
   "description": "Conexys Project Library",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -36,7 +36,10 @@
     "react-router-dom": "^7.6.2",
     "react-select": "^5.10.1",
     "sweetalert2": "^11.22.0",
-    "sweetalert2-react-content": "^5.1.0"
+    "sweetalert2-react-content": "^5.1.0",
+    "react-transition-group": "^4.4.5",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",

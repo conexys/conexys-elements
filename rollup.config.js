@@ -47,6 +47,25 @@ export default {
     '@fingerprintjs/fingerprintjs',
     'react-cssfx-loading',
     'jodit-react',
-    'react-hook-form'
+    'react-hook-form',
+    'material-react-table',
+    'prop-types',
+    'react-bootstrap',
+    'react-icons',
+    'react-transition-group',
+    'dom-helpers',
+    '@emotion/react',
+    '@emotion/utils',
+    '@emotion/styled',
+    '@emotion/cache',
+    '@emotion/serialize',
+    '@emotion/sheet',
+    '@emotion/css',
+    '@emotion/is-prop-valid',
+    '@emotion/unitless',
+    '@emotion/hash',
+    '@emotion/memoize',
+    '@emotion/weak-memoize',
+    '@emotion/stylis'
   ]
 };
