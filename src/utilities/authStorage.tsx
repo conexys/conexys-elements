@@ -20,38 +20,59 @@ const config: ContentTypeConfig = {
 let USE_COOKIES_FOR_AUTH = false; // Default value
 let SESSION_EXPIRATION = 365; // Default value
 let isConfigInitialized = false;
+let initPromise: Promise<void> | null = null;
 
 // Initialize configuration from the API
-const initializeAuthConfig = async (
+const initializeAuthConfig = (
   configLogs: ReturnType<typeof useConexysConfig>,
 ): Promise<void> => {
-  if (isConfigInitialized) return;
+  // Reuse the same in-flight promise to avoid concurrent duplicate fetches.
+  if (initPromise) return initPromise;
 
-  const baseURL: string = Url + 'getsettings';
+  initPromise = (async (): Promise<void> => {
+    if (isConfigInitialized) return;
 
-  try {
-    await serviceData(
-      baseURL,
-      { keys: 'type_session' },
-      config,
-      (value: string) => {
-        USE_COOKIES_FOR_AUTH = value === 'cookie';
-        isConfigInitialized = true;
-      },
-      configLogs,
-    );
-  } catch (error) {
-    logConsole(
-      configLogs,
-      'error',
-      'Error loading authentication configuration:',
-      error,
-    );
-    isConfigInitialized = true; // Mark as initialized even if it fails
-  }
+    const baseURL: string = Url + 'getsettings';
+
+    try {
+      await serviceData(
+        baseURL,
+        { keys: 'type_session' },
+        config,
+        (value: string) => {
+          USE_COOKIES_FOR_AUTH = value === 'cookie';
+          isConfigInitialized = true;
+        },
+        configLogs,
+      );
+    } catch (error) {
+      logConsole(
+        configLogs,
+        'error',
+        'Error loading authentication configuration:',
+        error,
+      );
+    } finally {
+      // Always resolve initialization so callers can proceed deterministically,
+      // even on failure (falls back to the default localStorage behavior).
+      isConfigInitialized = true;
+    }
+  })();
+
+  return initPromise;
 };
 
 export const authStorage = {
+  /**
+   * Exposes the initialization so callers (e.g. Login) can await the
+   * `type_session` config before deciding where to read/write auth data.
+   * This removes the race condition where a synchronous getter returns
+   * null because the async config hasn't loaded yet.
+   */
+  initialize(configLogs: ReturnType<typeof useConexysConfig>): Promise<void> {
+    return initializeAuthConfig(configLogs);
+  },
+
   setAuthToken(
     token: string,
     configLogs: ReturnType<typeof useConexysConfig>,
@@ -68,9 +89,8 @@ export const authStorage = {
     initializeAuthConfig(configLogs);
     if (USE_COOKIES_FOR_AUTH) {
       return this.getCookie('cxauthxc');
-    } else {
-      return localStorage.getItem('cxauthxc');
     }
+    return localStorage.getItem('cxauthxc');
   },
 
   setSessionId(
@@ -89,9 +109,8 @@ export const authStorage = {
     initializeAuthConfig(configLogs);
     if (USE_COOKIES_FOR_AUTH) {
       return this.getCookie('cx_session');
-    } else {
-      return localStorage.getItem('cx_session');
     }
+    return localStorage.getItem('cx_session');
   },
 
   removeAuthData(configLogs: ReturnType<typeof useConexysConfig>): void {
@@ -109,7 +128,10 @@ export const authStorage = {
     const date = new Date();
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
     const expires = `expires=${date.toUTCString()}`;
-    document.cookie = `${name}=${value};${expires};path=/;SameSite=Strict;Secure`;
+    // Only set the Secure flag on HTTPS. On plain HTTP (e.g. localhost in dev)
+    // a Secure cookie is silently rejected by the browser, which breaks auth.
+    const secure = window.location.protocol === 'https:' ? ';Secure' : '';
+    document.cookie = `${name}=${value};${expires};path=/;SameSite=Strict${secure}`;
   },
 
   getCookie(name: string): string | null {
