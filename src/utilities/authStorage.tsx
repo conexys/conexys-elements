@@ -77,12 +77,15 @@ export const authStorage = {
     token: string,
     configLogs: ReturnType<typeof useConexysConfig>,
   ): void {
+    // Write to BOTH media deterministically. The medium selection depends on
+    // an async `getsettings` call (initializeAuthConfig) that may not have
+    // resolved yet at login time. Writing to both cookie and localStorage
+    // guarantees the token is always retrievable on a later read, regardless
+    // of timing or which copy of this module (admin vs plugin bundle) does the
+    // read. Reading (getAuthToken) already checks both cookie and localStorage.
     initializeAuthConfig(configLogs);
-    if (USE_COOKIES_FOR_AUTH) {
-      this.setCookie('cxauthxc', token, SESSION_EXPIRATION);
-    } else {
-      localStorage.setItem('cxauthxc', token);
-    }
+    this.setCookie('cxauthxc', token, SESSION_EXPIRATION);
+    localStorage.setItem('cxauthxc', token);
   },
 
   getAuthToken(configLogs: ReturnType<typeof useConexysConfig>): string | null {
@@ -106,12 +109,11 @@ export const authStorage = {
     sessionId: string,
     configLogs: ReturnType<typeof useConexysConfig>,
   ): void {
+    // Same rationale as setAuthToken: write to both media to avoid the async
+    // medium-detection race at login time.
     initializeAuthConfig(configLogs);
-    if (USE_COOKIES_FOR_AUTH) {
-      this.setCookie('cx_session', sessionId, SESSION_EXPIRATION);
-    } else {
-      localStorage.setItem('cx_session', sessionId);
-    }
+    this.setCookie('cx_session', sessionId, SESSION_EXPIRATION);
+    localStorage.setItem('cx_session', sessionId);
   },
 
   getSessionId(configLogs: ReturnType<typeof useConexysConfig>): string | null {
@@ -127,13 +129,11 @@ export const authStorage = {
 
   removeAuthData(configLogs: ReturnType<typeof useConexysConfig>): void {
     initializeAuthConfig(configLogs);
-    if (USE_COOKIES_FOR_AUTH) {
-      this.deleteCookie('cxauthxc');
-      this.deleteCookie('cx_session');
-    } else {
-      localStorage.removeItem('cxauthxc');
-      localStorage.removeItem('cx_session');
-    }
+    // Clear BOTH media so no stale token remains regardless of configured mode.
+    this.deleteCookie('cxauthxc');
+    this.deleteCookie('cx_session');
+    localStorage.removeItem('cxauthxc');
+    localStorage.removeItem('cx_session');
   },
 
   setCookie(name: string, value: string, days: number): void {

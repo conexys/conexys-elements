@@ -63,12 +63,36 @@ const AppHeaderPage: React.FC<AppHeaderPageProps> = ({ fpHash, title }) => {
 
   const hasFetched = useRef<boolean>(false); // Prevent duplicate call
 
-  const cxauthxc: string = authStorage.getAuthToken(configLogs) || ''; // Check if the user is logged in
-  const sessionID: string = authStorage.getSessionId(configLogs) || ''; // Check if the user is logged in
+  // Los tokens se leen de forma asíncrona tras inicializar authStorage (consulta
+  // `getsettings` para saber si el modo es cookie o localStorage). Leerlos de forma
+  // síncrona en el render provocaba un token vacío al recargar la página
+  // directamente, lo que disparaba `getfavorites` con sesión inválida (401) y
+  // podía cerrar la sesión.
+  const [token, setToken] = useState<string>('');
+  const [sessionId, setSessionId] = useState<string>('');
+  const [authReady, setAuthReady] = useState<boolean>(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    authStorage.initialize(configLogs).then(() => {
+      if (cancelled) return;
+      setToken(authStorage.getAuthToken(configLogs) || '');
+      setSessionId(authStorage.getSessionId(configLogs) || '');
+      setAuthReady(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const cxauthxc: string = token; // Check if the user is logged in
+  const sessionID: string = sessionId; // Check if the user is logged in
 
   const hash: string = window.location.pathname;
 
   useEffect(() => {
+    if (!authReady) return;
     // Read the user's favourites database
     if (hasFetched.current) return; // If already executed, do not run again
     hasFetched.current = true;
@@ -88,7 +112,7 @@ const AppHeaderPage: React.FC<AppHeaderPageProps> = ({ fpHash, title }) => {
       configLogs,
       { url: hash },
     );
-  }, []);
+  }, [authReady, fpHash, sessionID, cxauthxc, t, hash, configLogs]);
 
   const handleClickMenuRigth = useCallback((): void => {
     setOpenMenuRigth((prev) => !prev);
