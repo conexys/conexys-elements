@@ -87,10 +87,19 @@ export const authStorage = {
 
   getAuthToken(configLogs: ReturnType<typeof useConexysConfig>): string | null {
     initializeAuthConfig(configLogs);
+    // Robust medium detection: if the config is already initialized, trust the
+    // configured mode. But if init hasn't completed yet (e.g. inside a plugin
+    // bundle that never runs the login flow), auto-detect by checking both the
+    // cookie and localStorage deterministically. This avoids 401s in plugins
+    // when `type_session=cookie` but the plugin's own copy of this module has
+    // not initialized USE_COOKIES_FOR_AUTH.
     if (USE_COOKIES_FOR_AUTH) {
       return this.getCookie('cxauthxc');
     }
-    return localStorage.getItem('cxauthxc');
+    const local = localStorage.getItem('cxauthxc');
+    if (local !== null) return local;
+    // Fallback: maybe it's stored in a cookie but the flag didn't initialize.
+    return this.getCookie('cxauthxc');
   },
 
   setSessionId(
@@ -107,10 +116,13 @@ export const authStorage = {
 
   getSessionId(configLogs: ReturnType<typeof useConexysConfig>): string | null {
     initializeAuthConfig(configLogs);
+    // Same robust medium detection as getAuthToken (see note above).
     if (USE_COOKIES_FOR_AUTH) {
       return this.getCookie('cx_session');
     }
-    return localStorage.getItem('cx_session');
+    const local = localStorage.getItem('cx_session');
+    if (local !== null) return local;
+    return this.getCookie('cx_session');
   },
 
   removeAuthData(configLogs: ReturnType<typeof useConexysConfig>): void {

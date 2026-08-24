@@ -23,6 +23,7 @@ import postFormService from '../services/postFormService';
 import postFormServiceGetPost from '../services/postFormServiceGetPost';
 import restoreFormService from '../services/restoreFormService';
 import { getOrSetFingerprint } from '../shared/baseFingerprintService';
+import { authStorage } from '../utilities/authStorage';
 import { Url } from '../constants/global';
 import { logConsole } from '../utilities/logConsole';
 import { useConexysConfig } from '../config/ConexysConfig';
@@ -118,11 +119,13 @@ export const initializeSharedServices = (): void => {
       baseUrl: Url,
     },
 
-    // Helper to retrieve authentication data
+    // Helper to retrieve authentication data.
+    // Uses authStorage so it respects the configured storage mode
+    // (cookie vs localStorage), unlike the previous direct localStorage reads.
     getAuthData: (): AuthData => {
       return {
-        sessionID: localStorage.getItem('cx_session'),
-        authToken: localStorage.getItem('cxauthxc'),
+        sessionID: authStorage.getSessionId(configLogs),
+        authToken: authStorage.getAuthToken(configLogs),
       };
     },
   };
