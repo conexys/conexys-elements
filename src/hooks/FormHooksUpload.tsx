@@ -57,6 +57,7 @@ const useCustomForm = (
 
   const cxauthxc: string = authStorage.getAuthToken(configLogs) || ''; //Check if the user is logged in
   const sessionID: string = authStorage.getSessionId(configLogs) || ''; //Check if the user is logged in
+  const xSessionType = authStorage.getSessionTypeValue(configLogs);
 
   const authorization: boolean = true;
 
@@ -189,6 +190,7 @@ const useCustomForm = (
         Authorization: `Bearer ${cxauthxc}`,
         'X-Session-ID': sessionID,
         'X-Fingerprint': fpHash,
+        'X-Session-Type': xSessionType,
         'Content-Type': 'application/json',
       },
     }),

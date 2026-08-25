@@ -11,6 +11,7 @@ import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 import { Url } from '../constants/global';
 import { logConsole } from '../utilities/logConsole';
+import { authStorage } from '../utilities/authStorage';
 import type {
   PostServiceBaseParams,
   ServiceDataResponse,
@@ -30,6 +31,7 @@ export const getservice = async (
   configLogs?: ReturnType<typeof useConexysConfig> | null,
 ): Promise<ServiceDataResponse> => {
   const getURL: string = Url + datauser.postServerURL;
+  const xSessionType = authStorage.getSessionTypeValue(configLogs!);
   const {
     authorization,
     postServerURL,
@@ -46,6 +48,7 @@ export const getservice = async (
         Authorization: `Bearer ${cxauthxc}`,
         'X-Session-ID': sessionID || '',
         'X-Fingerprint': fingerprint || '',
+        'X-Session-Type': xSessionType,
       },
       params: requestData,
     };

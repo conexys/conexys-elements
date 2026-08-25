@@ -11,6 +11,7 @@
 import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 import { logConsole } from '../utilities/logConsole';
+import { authStorage } from '../utilities/authStorage';
 import type { DeleteServiceParams, ServiceResponse } from '../types/common';
 import { useConexysConfig } from '../config/ConexysConfig';
 
@@ -40,12 +41,14 @@ const deleteFormService = async (
 ): Promise<ServiceResponse> => {
   const { cxauthxc, deleteServerURL, ...datasend } = datauser;
   const logs = configLogs || defaultConfig;
+  const xSessionType = authStorage.getSessionTypeValue(logs);
 
   const config = {
     headers: {
       Authorization: `Bearer ${cxauthxc}`,
       'X-Session-ID': datauser.sessionID || '',
       'X-Fingerprint': datauser.fingerprint || '',
+      'X-Session-Type': xSessionType,
       'Content-Type': 'application/json',
     },
   };

@@ -71,6 +71,7 @@ export default function AppFormFieldsTable({
   //GET DATA FORM (reads the data stored in the backend database)
   const authTokens: string = authStorage.getAuthToken(configLogs) || '';
   const authTokensSes: string = authStorage.getSessionId(configLogs) || '';
+  const xSessionType = authStorage.getSessionTypeValue(configLogs);
 
   const config = useMemo(
     () => ({
@@ -78,6 +79,7 @@ export default function AppFormFieldsTable({
         Authorization: `Bearer ${authTokens}`,
         'X-Session-ID': authTokensSes,
         'X-Fingerprint': fpHash,
+        'X-Session-Type': xSessionType,
         'Content-Type': 'application/json',
       },
     }),

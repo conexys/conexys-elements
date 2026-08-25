@@ -62,7 +62,13 @@ const servicePostBasic = async (
   const key = { sessionID, fingerprint: visitorIdHash };
   logConsole(configLogs, 'debug', '[Payload] ', key);
   try {
-    const response: AxiosResponse<any> = await axios.post(baseURL, key, config);
+    const response: AxiosResponse<any> = await axios.post(baseURL, key, {
+      ...config,
+      headers: {
+        ...(config?.headers || {}),
+        'X-Session-Type': authStorage.getSessionTypeValue(configLogs!),
+      },
+    });
     logConsole(configLogs, 'info', '[Request] ', baseURL);
     logConsole(configLogs, 'data', '', response.data);
     setData(response.data);
@@ -81,7 +87,13 @@ const serviceData = async (
 ): Promise<void> => {
   logConsole(configLogs, 'debug', '[Payload] ', key);
   try {
-    const response = await axios.post(baseURL, key, config);
+    const response = await axios.post(baseURL, key, {
+      ...config,
+      headers: {
+        ...(config?.headers || {}),
+        'X-Session-Type': authStorage.getSessionTypeValue(configLogs!),
+      },
+    });
     logConsole(configLogs, 'info', '[Request] ', baseURL);
     logConsole(configLogs, 'data', '', response.data);
 
@@ -334,7 +346,11 @@ const serviceLogout = async (
     const displaymode: string | null = localStorage.getItem('displaymode');
     const displayzoom: string | null = localStorage.getItem('displayzoom');
 
-    localStorage.clear();
+    // IMPORTANT: do NOT `localStorage.clear()` here — it also wipes the
+    // cross-bundle `cx_type_session` cache, which every component then re-fetches
+    // via `getsettings`, cascading into ERR_INSUFFICIENT_RESOURCES on logout.
+    // removeAuthData() already clears only the auth tokens/session (both media),
+    // and preserves `cx_type_session` so the resolved medium stays cached.
     authStorage.removeAuthData(configLogs);
 
     if (userLanguage) localStorage.setItem('userLanguage', userLanguage);

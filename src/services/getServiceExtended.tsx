@@ -14,6 +14,7 @@ import { Uservalidationerror } from '../components/index';
 import { logConsole } from '../utilities/logConsole';
 import { useConexysConfig } from '../config/ConexysConfig';
 import { getservice } from './getService';
+import { authStorage } from '../utilities/authStorage';
 
 /**
  * Error handler shared across GET service functions.
@@ -66,11 +67,16 @@ const getServiceBasic = async (
 ): Promise<void> => {
   const visitorIdHash: string = await getOrSetFingerprint(fpHash);
   const key = { sessionID, fingerprint: visitorIdHash };
+  const xSessionType = authStorage.getSessionTypeValue(configLogs!);
   logConsole(configLogs, 'debug', '[Params] ', key);
   try {
     const response: AxiosResponse<any> = await axios.get(baseURL, {
       ...config,
       params: key,
+      headers: {
+        ...(config?.headers || {}),
+        'X-Session-Type': xSessionType,
+      },
     });
     logConsole(configLogs, 'info', '[Request] ', baseURL);
     logConsole(configLogs, 'data', '', response.data);
@@ -169,6 +175,10 @@ const getServiceData = async (
     const response = await axios.get(baseURL, {
       ...config,
       params,
+      headers: {
+        ...(config?.headers || {}),
+        'X-Session-Type': authStorage.getSessionTypeValue(configLogs!),
+      },
     });
     logConsole(configLogs, 'debug', '[Params] ', params);
     logConsole(configLogs, 'info', '[Request] ', baseURL);

@@ -15,5 +15,5 @@ export interface AuthData {
 
 export interface AuthContextType {
   authTokens: string | null;
-  setAuthTokens: (data: AuthData) => void;
+  setAuthTokens: (data: AuthData) => void | Promise<void>;
 }

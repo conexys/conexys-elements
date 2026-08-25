@@ -11,6 +11,7 @@ import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 import { Url } from '../constants/global';
 import { logConsole } from '../utilities/logConsole';
+import { authStorage } from '../utilities/authStorage';
 import type {
   PostServiceBaseParams,
   ServiceDataResponse,
@@ -30,6 +31,7 @@ export const patchservice = async (
 ): Promise<ServiceDataResponse> => {
   const patchURL: string = Url + datauser.postServerURL;
   const { authorization, postServerURL, cxauthxc, ...requestData } = datauser;
+  const xSessionType = authStorage.getSessionTypeValue(configLogs!);
 
   let config: any;
   if (authorization === true || authorization === 'true') {
@@ -38,6 +40,7 @@ export const patchservice = async (
         Authorization: `Bearer ${cxauthxc}`,
         'X-Session-ID': datauser.sessionID || '',
         'X-Fingerprint': datauser.fingerprint || '',
+        'X-Session-Type': xSessionType,
         'Content-Type': 'application/json',
       },
     };

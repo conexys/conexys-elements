@@ -10,6 +10,7 @@
 import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 import { logConsole } from '../utilities/logConsole';
+import { authStorage } from '../utilities/authStorage';
 import type { ValueToPush } from '../types/services/postFormService.types';
 import type { PostFormServiceBaseParams } from '../types/common';
 import { useConexysConfig } from '../config/ConexysConfig';
@@ -60,6 +61,8 @@ const patchFormService = async (
 
   const dataload = [restData, valueToPush];
 
+  const xSessionType = authStorage.getSessionTypeValue(configLogs!);
+
   let config: any;
   let datasend: any;
 
@@ -69,6 +72,7 @@ const patchFormService = async (
         Authorization: `Bearer ${datauser.cxauthxc}`,
         'X-Session-ID': datauser.sessionID || '',
         'X-Fingerprint': datauser.fingerprint || '',
+        'X-Session-Type': xSessionType,
         'Content-Type': 'application/json',
       },
     };

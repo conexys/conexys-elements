@@ -10,6 +10,7 @@
 import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 import { logConsole } from '../utilities/logConsole';
+import { authStorage } from '../utilities/authStorage';
 import type { PostFormServiceGetPostParams } from '../types/services/postFormServiceGetPost.types';
 import type { ServiceResponse } from '../types/common';
 import { useConexysConfig } from '../config/ConexysConfig';
@@ -67,6 +68,8 @@ const postFormServiceGetPost = async (
   formData.append('sessionID', sessionID);
   formData.append('fingerprint', fingerprint);
 
+  const xSessionType = authStorage.getSessionTypeValue(configLogs || defaultConfig);
+
   let config: any;
   if (authorization === true) {
     config = {
@@ -74,6 +77,7 @@ const postFormServiceGetPost = async (
         Authorization: `Bearer ${cxauthxc}`,
         'X-Session-ID': sessionID,
         'X-Fingerprint': fingerprint,
+        'X-Session-Type': xSessionType,
         'Content-Type': 'multipart/form-data',
       },
     };

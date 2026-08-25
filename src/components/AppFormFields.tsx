@@ -64,6 +64,7 @@ export default function AppFormFields({
   //GET DATA FORM (reads the data stored in the backend database)
   const authTokens: string = authStorage.getAuthToken(configLogs) || ''; //Check if the user is logged in
   const authTokensSes: string = authStorage.getSessionId(configLogs) || ''; //Check if the user is logged in
+  const xSessionType = authStorage.getSessionTypeValue(configLogs);
 
   const config: RequestConfig = useMemo(
     () => ({
@@ -71,6 +72,7 @@ export default function AppFormFields({
         Authorization: `Bearer ${authTokens}`,
         'X-Session-ID': authTokensSes,
         'X-Fingerprint': fpHash,
+        'X-Session-Type': xSessionType,
         'Content-Type': 'application/json',
       },
     }),

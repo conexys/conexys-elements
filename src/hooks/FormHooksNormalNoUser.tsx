@@ -18,6 +18,7 @@ import { Url } from '../constants/global';
 import axios from 'axios';
 import type { AxiosError } from 'axios';
 import { getOrSetFingerprint } from '../shared/baseFingerprintService';
+import { authStorage } from '../utilities/authStorage';
 import { logConsole } from '../utilities/logConsole';
 import type {
   AuthData,
@@ -51,6 +52,7 @@ const useCustomForm = (
     typeof externalUseAuth === 'function'
       ? externalUseAuth()
       : externalUseAuth || useAuth(); // Usa el useAuth externo si está disponible
+  const xSessionType = authStorage.getSessionTypeValue(configLogs);
   const [t] = useTranslation('global');
   const MySwal = withReactContent(SweetAlert2);
   const [formInputs, setFormInputs] = useState<FormInputs>({});
@@ -133,6 +135,7 @@ const useCustomForm = (
                       Authorization: `Bearer ${dataform.auth}`,
                       'X-Session-ID': dataform.sessionid,
                       'X-Fingerprint': dataform.fingerprint || visitorId,
+                      'X-Session-Type': xSessionType,
                       'Content-Type': 'application/json',
                     },
                   };
