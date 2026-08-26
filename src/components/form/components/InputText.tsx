@@ -17,6 +17,7 @@ import type {
   ApiError,
 } from '../../../types/components/form.types';
 import { useConexysConfig } from '../../../config/ConexysConfig';
+import { authStorage } from '../../../utilities/authStorage';
 
 /**
  * InputText component for rendering text input fields with validation.
@@ -35,7 +36,7 @@ const InputText: React.FC<InputTextProps> = React.memo(
 
     const handleInputBlur = useCallback(
       async (event: React.FocusEvent<HTMLInputElement>): Promise<void> => {
-        const session = localStorage.getItem('cx_session') || '';
+        const session = authStorage.getSessionId(configLogs) || '';
         const value = event.target.value;
 
         const setErrorState = (error: boolean, message: string): void => {
