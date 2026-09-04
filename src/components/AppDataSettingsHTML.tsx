@@ -14,6 +14,7 @@ import type { AppDataSettingsHTMLProps } from '../types/components/components.ty
 import type { ContentTypeConfig } from '../types/common';
 import { useConexysConfig } from '../config/ConexysConfig';
 import { logConsole } from '../utilities/logConsole';
+import { sanitizeHtml } from '../utilities/sanitizeHtml';
 
 const config: ContentTypeConfig = {
   headers: {
@@ -68,7 +69,7 @@ export default function AppDataSettingsHTML({
       {error ? (
         <div>Error loading data</div>
       ) : (
-        <div dangerouslySetInnerHTML={{ __html: htmlString }} />
+        <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(htmlString) }} />
       )}
     </>
   );
