@@ -20,6 +20,7 @@ import { getservice2 } from '../../services/getServiceExtended';
 import { Loading } from './index';
 import { authStorage } from '../../utilities/authStorage';
 import { logConsole } from '../../utilities/logConsole';
+import { sanitizeHtml } from '../../utilities/sanitizeHtml';
 import type {
   MailTemplateWidgetProps,
   ThemeData,
@@ -99,7 +100,9 @@ export default function MailTemplateWidget({
   );
   // Alert
 
-  const theObj: { __html: string } = { __html: getthemedata.html || '' };
+  const theObj: { __html: string } = {
+    __html: sanitizeHtml(getthemedata.html) || '',
+  };
   logConsole(configLogs, 'data', '', getthemedata);
 
   return (

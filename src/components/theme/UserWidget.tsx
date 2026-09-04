@@ -19,6 +19,7 @@ import { getservice2 } from '../../services/getServiceExtended';
 import { getOrSetFingerprint } from '../../shared/baseFingerprintService';
 import { authStorage } from '../../utilities/authStorage';
 import { logConsole } from '../../utilities/logConsole';
+import { sanitizeHtml } from '../../utilities/sanitizeHtml';
 import type {
   UserWidgetProps,
   UserDataTheme,
@@ -204,7 +205,9 @@ export default function UserWidget({
   };
   // Alert
 
-  const theObj: { __html: string } = { __html: datauserdata.biography || '' };
+  const theObj: { __html: string } = {
+    __html: sanitizeHtml(datauserdata.biography) || '',
+  };
 
   return (
     <>

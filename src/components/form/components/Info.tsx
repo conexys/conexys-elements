@@ -9,6 +9,7 @@
 import React from 'react';
 import Alert from '@mui/material/Alert';
 import type { InfoProps } from '../../../types/components/form.types';
+import { sanitizeHtml } from '../../../utilities/sanitizeHtml';
 
 /**
  * Displays a text in the form to inform or warn
@@ -25,7 +26,7 @@ import type { InfoProps } from '../../../types/components/form.types';
  */
 const Info: React.FC<InfoProps> = ({ block }) => {
   const { variant, ref, severity, warning, texthtml } = block;
-  const theObj: { __html: string } = { __html: texthtml };
+  const theObj: { __html: string } = { __html: sanitizeHtml(texthtml) };
 
   return (
     <div className={ref}>
