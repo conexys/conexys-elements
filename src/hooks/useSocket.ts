@@ -13,11 +13,12 @@ import { io, Socket } from 'socket.io-client';
 import { authStorage } from '../utilities/authStorage';
 import { logConsole } from '../utilities/logConsole';
 import { useConexysConfig } from '../config/ConexysConfig';
+import { Url } from '../constants/global';
 
 // Extraer la base URL del WebSocket a partir de la URL de la API REST
 // Si la API está en "http://localhost:3001/restapi/", el WS va a "http://localhost:3001"
 const getWsBaseUrl = (): string => {
-  const restApi = (window as any).restAPI || 'http://localhost:3001/restapi/';
+  const restApi = Url || 'http://localhost:3001/restapi/';
   // Quitar '/restapi/' o '/restapi' del final
   return restApi.replace(/\/restapi\/?$/, '');
 };
