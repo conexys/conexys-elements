@@ -33,7 +33,8 @@ const InputWYSIWYG: React.FC<InputWYSIWYGProps> = React.memo(
     const config = useMemo(
       () => ({
         readonly: false, // all options from https://xdsoft.net/jodit/docs/,
-        safeMode: true, // strip script/iframe/etc. and event-handler attributes
+        //safeMode: true, // strip script/iframe/etc. and event-handler attributes
+        toolbarAdaptive: false,
         allowTags: [
           'p',
           'br',
