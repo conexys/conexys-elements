@@ -82,6 +82,7 @@ const useCustomForm = (
 
     try {
       const response = await axios.get(getProfile, {
+        withCredentials: true,
         headers: {
           Authorization: `Bearer ${cxauthxc}`,
           'X-Session-ID': sessionID,
@@ -336,10 +337,20 @@ const useCustomForm = (
           let response;
           if (fetchMethod === 'get') {
             const url = getServerURL + id;
-            response = await axios.get(url, config);
+            response = await axios.get(url, {
+              ...config,
+              withCredentials: true,
+            });
             logConsole(configLogs, 'info', '[Request] ', url);
           } else {
-            response = await axios.post(getServerURL, key, config);
+            response = await axios.post(getServerURL, key, {
+              ...config,
+              withCredentials: true,
+              headers: {
+                ...(config?.headers || {}),
+                'X-CSRF-Token': authStorage.getCsrfToken() || '',
+              },
+            });
             logConsole(configLogs, 'info', '[Request] ', getServerURL);
           }
 

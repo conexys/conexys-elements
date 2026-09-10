@@ -209,7 +209,14 @@ const useCustomForm = (
         fingerprint: visitorIdHash,
       };
       try {
-        const response = await axios.post(getServerURL, key, config);
+        const response = await axios.post(getServerURL, key, {
+          ...config,
+          withCredentials: true,
+          headers: {
+            ...(config?.headers || {}),
+            'X-CSRF-Token': authStorage.getCsrfToken() || '',
+          },
+        });
 
         logConsole(configLogs, 'info', '[Request] ', getServerURL);
 

@@ -64,9 +64,11 @@ const servicePostBasic = async (
   try {
     const response: AxiosResponse<any> = await axios.post(baseURL, key, {
       ...config,
+      withCredentials: true,
       headers: {
         ...(config?.headers || {}),
         'X-Session-Type': authStorage.getSessionTypeValue(configLogs!),
+        'X-CSRF-Token': authStorage.getCsrfToken() || '',
       },
     });
     logConsole(configLogs, 'info', '[Request] ', baseURL);
@@ -89,9 +91,11 @@ const serviceData = async (
   try {
     const response = await axios.post(baseURL, key, {
       ...config,
+      withCredentials: true,
       headers: {
         ...(config?.headers || {}),
         'X-Session-Type': authStorage.getSessionTypeValue(configLogs!),
+        'X-CSRF-Token': authStorage.getCsrfToken() || '',
       },
     });
     logConsole(configLogs, 'info', '[Request] ', baseURL);
@@ -155,7 +159,14 @@ const servicePost = async (
       const response: AxiosResponse<any> = await axios.post(
         postURL1,
         key,
-        config,
+        {
+          ...config,
+          withCredentials: true,
+          headers: {
+            ...(config?.headers || {}),
+            'X-CSRF-Token': authStorage.getCsrfToken() || '',
+          },
+        },
       );
       logConsole(configLogs, 'info', '[Request] ', postURL1);
       logConsole(configLogs, 'data', '', response.data);
@@ -284,9 +295,17 @@ const servicePostData = async (
       const response: AxiosResponse<any> = await axios.post(
         postURL1,
         key,
-        config,
+        {
+          ...config,
+          withCredentials: true,
+          headers: {
+            ...(config?.headers || {}),
+            'X-CSRF-Token': authStorage.getCsrfToken() || '',
+          },
+        },
       );
       logConsole(configLogs, 'info', '[Request] ', postURL1);
+      logConsole(configLogs, 'data', '', response.data);
       setPost(response.data);
     } catch (error) {
       logConsole(configLogs, 'error', '', error);

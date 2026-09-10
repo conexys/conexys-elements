@@ -23,6 +23,12 @@ const config: ContentTypeConfig = {
 // resorting to a cross-medium auth fallback that would ignore `type_session`.
 const TYPE_SESSION_CACHE_KEY = 'cx_type_session';
 
+// VIII-C3: sentinel returned by getAuthToken() when the real JWT lives in an
+// HttpOnly cookie (type_session='cookie') and is therefore unreadable by JS.
+// It keeps every `getAuthToken() !== ''` login gate and `cxauthxc` payload
+// plumbing non-null without ever exposing the secret to JavaScript.
+const COOKIE_AUTH_MARKER = 'cookie';
+
 let USE_COOKIES_FOR_AUTH = false; // Default value
 let SESSION_EXPIRATION = 365; // Default value
 
@@ -237,8 +243,11 @@ export const authStorage = {
   ): Promise<void> {
     await initializeAuthConfig(configLogs);
     if (resolveUseCookies()) {
-      this.setCookie('cxauthxc', token, SESSION_EXPIRATION);
+      // VIII-C: the backend now owns the session cookie (HttpOnly). Never write
+      // the JWT from JS (it would be XSS-readable). The login flow still calls
+      // this for compatibility, so we only drop any stale JS-readable copy.
       localStorage.removeItem('cxauthxc');
+      this.deleteCookie('cxauthxc');
     } else {
       localStorage.setItem('cxauthxc', token);
       this.deleteCookie('cxauthxc');
@@ -248,9 +257,21 @@ export const authStorage = {
   getAuthToken(_configLogs: ReturnType<typeof useConexysConfig>): string | null {
     // Synchronous read only — no init, no fetch.
     if (resolveUseCookies()) {
-      return this.getCookie('cxauthxc');
+      // HttpOnly cookie: unreadable by JS. Return a truthy marker so login
+      // gates (`!== ''`) and payload plumbing keep working; the real JWT is
+      // sent automatically by the browser via the HttpOnly cookie.
+      return COOKIE_AUTH_MARKER;
     }
     return localStorage.getItem('cxauthxc');
+  },
+
+  /**
+   * VIII-C3: returns the CSRF token for the double-submit scheme. Reads the
+   * non-HttpOnly `csrf_token` cookie set by the backend at login. Returns null
+   * when absent (e.g. before login or with legacy backends).
+   */
+  getCsrfToken(): string | null {
+    return this.getCookie('csrf_token');
   },
 
   async setSessionId(
@@ -290,6 +311,8 @@ export const authStorage = {
   ): Promise<void> {
     this.deleteCookie('cxauthxc');
     this.deleteCookie('cx_session');
+    // VIII-C: clear the CSRF token as well on logout.
+    this.deleteCookie('csrf_token');
     localStorage.removeItem('cxauthxc');
     localStorage.removeItem('cx_session');
     // Clear the `cx_type_session` cache on logout (may be stale). The next

@@ -73,8 +73,10 @@ const postFormServiceGetPost = async (
   let config: any;
   if (authorization === true) {
     config = {
+      withCredentials: true,
       headers: {
         Authorization: `Bearer ${cxauthxc}`,
+        'X-CSRF-Token': authStorage.getCsrfToken() || '',
         'X-Session-ID': sessionID,
         'X-Fingerprint': fingerprint,
         'X-Session-Type': xSessionType,
@@ -83,7 +85,9 @@ const postFormServiceGetPost = async (
     };
   } else {
     config = {
+      withCredentials: true,
       headers: {
+        'X-CSRF-Token': authStorage.getCsrfToken() || '',
         'Content-Type': 'multipart/form-data',
       },
     };

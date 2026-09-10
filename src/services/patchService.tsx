@@ -36,8 +36,10 @@ export const patchservice = async (
   let config: any;
   if (authorization === true || authorization === 'true') {
     config = {
+      withCredentials: true,
       headers: {
         Authorization: `Bearer ${cxauthxc}`,
+        'X-CSRF-Token': authStorage.getCsrfToken() || '',
         'X-Session-ID': datauser.sessionID || '',
         'X-Fingerprint': datauser.fingerprint || '',
         'X-Session-Type': xSessionType,
@@ -46,7 +48,9 @@ export const patchservice = async (
     };
   } else {
     config = {
+      withCredentials: true,
       headers: {
+        'X-CSRF-Token': authStorage.getCsrfToken() || '',
         'Content-Type': 'application/json',
       },
     };
