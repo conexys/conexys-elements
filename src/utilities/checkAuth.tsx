@@ -18,15 +18,12 @@ import { useConexysConfig } from '../config/ConexysConfig';
 export const checkAuth = (
   configLogs: ReturnType<typeof useConexysConfig>,
 ): boolean => {
-  const cxauthxc: string = authStorage.getAuthToken(configLogs) || '';
-  const sessionID: string = authStorage.getSessionId(configLogs) || '';
+  // VIII-C3-fix: use the real session check. `getAuthToken()` returns the
+  // truthy 'cookie' marker in cookie mode even without a session, so it can no
+  // longer be used to decide authentication here.
+  const hasSession = authStorage.hasActiveSession(configLogs);
 
-  if (
-    cxauthxc === '' ||
-    sessionID === '' ||
-    cxauthxc === null ||
-    sessionID === null
-  ) {
+  if (!hasSession) {
     localStorage.removeItem('datauser');
     localStorage.removeItem('sidebarleft');
     localStorage.removeItem('cxl0k2mw');

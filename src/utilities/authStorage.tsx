@@ -266,6 +266,31 @@ export const authStorage = {
   },
 
   /**
+   * VIII-C3-fix: real session check, independent of the `cxauthxc` marker.
+   *
+   * `getAuthToken()` can no longer answer "is a session active?" because in
+   * cookie mode it always returns the truthy 'cookie' marker (the JWT lives in
+   * an HttpOnly cookie unreadable by JS). Gates that decide whether to show the
+   * dashboard MUST use this method instead.
+   *
+   * - cookie mode: a session is active only if the readable `cx_session` cookie
+   *   exists (the backend-issued HttpOnly `cxauthxc` JWT is validated server-side
+   *   on every request; `cx_session` is set by setSessionId() at login).
+   * - localstorage mode: a session is active only if a real `cxauthxc` token is
+   *   stored and it is NOT the cookie marker.
+   */
+  hasActiveSession(
+    _configLogs: ReturnType<typeof useConexysConfig>,
+  ): boolean {
+    if (resolveUseCookies()) {
+      const sessionId = this.getCookie('cx_session');
+      return sessionId !== null && sessionId !== '';
+    }
+    const token = localStorage.getItem('cxauthxc');
+    return token !== null && token !== '' && token !== COOKIE_AUTH_MARKER;
+  },
+
+  /**
    * VIII-C3: returns the CSRF token for the double-submit scheme. Reads the
    * non-HttpOnly `csrf_token` cookie set by the backend at login. Returns null
    * when absent (e.g. before login or with legacy backends).
