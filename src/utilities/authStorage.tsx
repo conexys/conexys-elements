@@ -284,7 +284,18 @@ export const authStorage = {
   ): boolean {
     if (resolveUseCookies()) {
       const sessionId = this.getCookie('cx_session');
-      return sessionId !== null && sessionId !== '';
+      const csrfToken = this.getCookie('csrf_token');
+      // Both cookies must be present: `cx_authxc` (HttpOnly JWT) is validated
+      // server-side, but the readable `cx_session` and `csrf_token` are the only
+      // client-side signals of a healthy session. If the CSRF token is missing
+      // (e.g. manually deleted), every mutating call would fail with 403, so we
+      // treat the session as inactive and redirect to login.
+      return (
+        sessionId !== null &&
+        sessionId !== '' &&
+        csrfToken !== null &&
+        csrfToken !== ''
+      );
     }
     const token = localStorage.getItem('cxauthxc');
     return token !== null && token !== '' && token !== COOKIE_AUTH_MARKER;
