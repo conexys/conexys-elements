@@ -33,7 +33,19 @@ const InputWYSIWYG: React.FC<InputWYSIWYGProps> = React.memo(
     const config = useMemo(
       () => ({
         readonly: false, // all options from https://xdsoft.net/jodit/docs/,
-        //safeMode: true, // strip script/iframe/etc. and event-handler attributes
+        // SECURITY NOTE (Analisis002 C1 — Jodit safeMode): intentionally NOT
+        // enabled. `safeMode` is a plugin *debug* toggle, not a sanitizer: it
+        // replaces the toolbar with a list of installed plugins and does NOT
+        // neutralize `<script>`, `<iframe>` or event-handler attributes.
+        //
+        // The real XSS mitigation for this rich-text editor is *output*
+        // sanitization: every place that renders user HTML through
+        // `dangerouslySetInnerHTML` runs it through `sanitizeHtml()` (which
+        // wraps DOMPurify.sanitize) — see utilities/sanitizeHtml.ts and its
+        // call sites (AppDataSettingsHTML, UserWidget, MailTemplateWidget,
+        // Mailbox, Info, …). DO NOT re-enable `safeMode` here as a hardening
+        // measure; rely on DOMPurify at render time instead.
+        // See docs: Mejoras_Seguridad/Analisis_2/JUSTIFICACION-JODIT-SAFEMODE.md
         toolbarAdaptive: false,
         allowTags: [
           'p',
