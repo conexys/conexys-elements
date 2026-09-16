@@ -97,11 +97,12 @@ const setCachedTypeSession = (value: string): void => {
  *   3. default 'localstorage' (install default)
  */
 const resolveUseCookies = (): boolean => {
-  if (isConfigInitialized) return USE_COOKIES_FOR_AUTH;
-  const cached = getCachedTypeSession();
-  if (cached !== null) return cached === 'cookie';
-  // No cached value yet → default to localStorage (install default).
-  return false;
+  // VIII-C4: auth is ALWAYS via HttpOnly cookie. The `type_session`
+  // localstorage medium is deprecated and removed: the JWT is never written to
+  // (nor read from) localStorage. This also retires the cross-bundle
+  // `cx_type_session` cache and the `getsettings` init cascade, since the
+  // medium is now a compile-time constant.
+  return true;
 };
 
 /**
@@ -234,35 +235,26 @@ export const authStorage = {
   getSessionTypeValue(
     _configLogs: ReturnType<typeof useConexysConfig>,
   ): 'cookie' | 'localstorage' {
-    return resolveUseCookies() ? 'cookie' : 'localstorage';
+    // VIII-C4: always cookie.
+    return 'cookie';
   },
 
   async setAuthToken(
-    token: string,
-    configLogs: ReturnType<typeof useConexysConfig>,
+    _token: string,
+    _configLogs: ReturnType<typeof useConexysConfig>,
   ): Promise<void> {
-    await initializeAuthConfig(configLogs);
-    if (resolveUseCookies()) {
-      // VIII-C: the backend now owns the session cookie (HttpOnly). Never write
-      // the JWT from JS (it would be XSS-readable). The login flow still calls
-      // this for compatibility, so we only drop any stale JS-readable copy.
-      localStorage.removeItem('cxauthxc');
-      this.deleteCookie('cxauthxc');
-    } else {
-      localStorage.setItem('cxauthxc', token);
-      this.deleteCookie('cxauthxc');
-    }
+    // VIII-C4: the JWT is exclusively HttpOnly-cookie based. Never persist the
+    // token in JS-accessible storage (localStorage) — that would make it
+    // XSS-readable. The login flow still calls this for compatibility, so we
+    // only drop any stale JS-readable copy.
+    localStorage.removeItem('cxauthxc');
+    this.deleteCookie('cxauthxc');
   },
 
   getAuthToken(_configLogs: ReturnType<typeof useConexysConfig>): string | null {
-    // Synchronous read only — no init, no fetch.
-    if (resolveUseCookies()) {
-      // HttpOnly cookie: unreadable by JS. Return a truthy marker so login
-      // gates (`!== ''`) and payload plumbing keep working; the real JWT is
-      // sent automatically by the browser via the HttpOnly cookie.
-      return COOKIE_AUTH_MARKER;
-    }
-    return localStorage.getItem('cxauthxc');
+    // VIII-C4: always cookie mode. HttpOnly cookie is unreadable by JS, so
+    // return the truthy marker to keep login gates and payload plumbing working.
+    return COOKIE_AUTH_MARKER;
   },
 
   /**
@@ -282,23 +274,16 @@ export const authStorage = {
   hasActiveSession(
     _configLogs: ReturnType<typeof useConexysConfig>,
   ): boolean {
-    if (resolveUseCookies()) {
-      const sessionId = this.getCookie('cx_session');
-      const csrfToken = this.getCookie('csrf_token');
-      // Both cookies must be present: `cx_authxc` (HttpOnly JWT) is validated
-      // server-side, but the readable `cx_session` and `csrf_token` are the only
-      // client-side signals of a healthy session. If the CSRF token is missing
-      // (e.g. manually deleted), every mutating call would fail with 403, so we
-      // treat the session as inactive and redirect to login.
-      return (
-        sessionId !== null &&
-        sessionId !== '' &&
-        csrfToken !== null &&
-        csrfToken !== ''
-      );
-    }
-    const token = localStorage.getItem('cxauthxc');
-    return token !== null && token !== '' && token !== COOKIE_AUTH_MARKER;
+    // VIII-C4: session is active only if the readable `cx_session` and CSRF
+    // cookies are present (the HttpOnly JWT is validated server-side).
+    const sessionId = this.getCookie('cx_session');
+    const csrfToken = this.getCookie('csrf_token');
+    return (
+      sessionId !== null &&
+      sessionId !== '' &&
+      csrfToken !== null &&
+      csrfToken !== ''
+    );
   },
 
   /**
@@ -312,24 +297,15 @@ export const authStorage = {
 
   async setSessionId(
     sessionId: string,
-    configLogs: ReturnType<typeof useConexysConfig>,
+    _configLogs: ReturnType<typeof useConexysConfig>,
   ): Promise<void> {
-    await initializeAuthConfig(configLogs);
-    if (resolveUseCookies()) {
-      this.setCookie('cx_session', sessionId, SESSION_EXPIRATION);
-      localStorage.removeItem('cx_session');
-    } else {
-      localStorage.setItem('cx_session', sessionId);
-      this.deleteCookie('cx_session');
-    }
+    // VIII-C4: always session via readable cookie (the JWT is HttpOnly).
+    this.setCookie('cx_session', sessionId, SESSION_EXPIRATION);
+    localStorage.removeItem('cx_session');
   },
 
   getSessionId(_configLogs: ReturnType<typeof useConexysConfig>): string | null {
-    // Synchronous read only — no init, no fetch.
-    if (resolveUseCookies()) {
-      return this.getCookie('cx_session');
-    }
-    return localStorage.getItem('cx_session');
+    return this.getCookie('cx_session');
   },
 
   /**
