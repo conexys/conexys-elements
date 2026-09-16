@@ -227,9 +227,6 @@ export default function UserWidget({
               <b>{t('login.username')}</b>: {datauserdata.username}
             </li>
             <li>
-              <b>{t('login.email')}</b>: {datauserdata.email}
-            </li>
-            <li>
               <b>{t('login.name')}</b>: {datauserdata.name}
             </li>
             <li>
