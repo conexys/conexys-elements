@@ -64,9 +64,11 @@ const servicePostBasic = async (
   try {
     const response: AxiosResponse<any> = await axios.post(baseURL, key, {
       ...config,
+      withCredentials: true,
       headers: {
         ...(config?.headers || {}),
         'X-Session-Type': authStorage.getSessionTypeValue(configLogs!),
+        'X-CSRF-Token': authStorage.getCsrfToken() || '',
       },
     });
     logConsole(configLogs, 'info', '[Request] ', baseURL);
@@ -89,9 +91,11 @@ const serviceData = async (
   try {
     const response = await axios.post(baseURL, key, {
       ...config,
+      withCredentials: true,
       headers: {
         ...(config?.headers || {}),
         'X-Session-Type': authStorage.getSessionTypeValue(configLogs!),
+        'X-CSRF-Token': authStorage.getCsrfToken() || '',
       },
     });
     logConsole(configLogs, 'info', '[Request] ', baseURL);
@@ -155,7 +159,14 @@ const servicePost = async (
       const response: AxiosResponse<any> = await axios.post(
         postURL1,
         key,
-        config,
+        {
+          ...config,
+          withCredentials: true,
+          headers: {
+            ...(config?.headers || {}),
+            'X-CSRF-Token': authStorage.getCsrfToken() || '',
+          },
+        },
       );
       logConsole(configLogs, 'info', '[Request] ', postURL1);
       logConsole(configLogs, 'data', '', response.data);
@@ -284,9 +295,17 @@ const servicePostData = async (
       const response: AxiosResponse<any> = await axios.post(
         postURL1,
         key,
-        config,
+        {
+          ...config,
+          withCredentials: true,
+          headers: {
+            ...(config?.headers || {}),
+            'X-CSRF-Token': authStorage.getCsrfToken() || '',
+          },
+        },
       );
       logConsole(configLogs, 'info', '[Request] ', postURL1);
+      logConsole(configLogs, 'data', '', response.data);
       setPost(response.data);
     } catch (error) {
       logConsole(configLogs, 'error', '', error);
@@ -349,14 +368,12 @@ const serviceLogout = async (
     // IMPORTANT: do NOT `localStorage.clear()` here — it also wipes the
     // cross-bundle `cx_type_session` cache, which every component then re-fetches
     // via `getsettings`, cascading into ERR_INSUFFICIENT_RESOURCES on logout.
-    // removeAuthData() already clears only the auth tokens/session (both media),
-    // and preserves `cx_type_session` so the resolved medium stays cached.
-    authStorage.removeAuthData(configLogs);
-
-    if (userLanguage) localStorage.setItem('userLanguage', userLanguage);
-    if (displaymode) localStorage.setItem('displaymode', displaymode);
-    if (displayzoom) localStorage.setItem('displayzoom', displayzoom);
-
+    //
+    // VIII-C-fix: call the backend FIRST, while the CSRF token and session
+    // cookies are still present. Clearing auth data before the request (a) left
+    // the POST without a valid `X-CSRF-Token` -> 403 -> session never deleted,
+    // and (b) the HttpOnly `cxauthxc` cookie can only be revoked server-side.
+    // removeAuthData() runs after a successful logout.
     await postserviceService.postservice(
       {
         sessionID,
@@ -367,6 +384,13 @@ const serviceLogout = async (
       },
       configLogs,
     );
+
+    authStorage.removeAuthData(configLogs);
+
+    if (userLanguage) localStorage.setItem('userLanguage', userLanguage);
+    if (displaymode) localStorage.setItem('displaymode', displaymode);
+    if (displayzoom) localStorage.setItem('displayzoom', displayzoom);
+
     setAuthTokens('');
   } catch (err) {
     const errorMessage: string = handleError(err as AxiosError, t, configLogs);

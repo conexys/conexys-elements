@@ -44,6 +44,7 @@ export const getservice = async (
   let config: any;
   if (authorization === true || authorization === 'true') {
     config = {
+      withCredentials: true,
       headers: {
         Authorization: `Bearer ${cxauthxc}`,
         'X-Session-ID': sessionID || '',
@@ -54,6 +55,7 @@ export const getservice = async (
     };
   } else {
     config = {
+      withCredentials: true,
       params: requestData,
     };
   }

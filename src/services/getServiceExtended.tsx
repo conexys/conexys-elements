@@ -72,6 +72,7 @@ const getServiceBasic = async (
   try {
     const response: AxiosResponse<any> = await axios.get(baseURL, {
       ...config,
+      withCredentials: true,
       params: key,
       headers: {
         ...(config?.headers || {}),
@@ -174,6 +175,7 @@ const getServiceData = async (
   try {
     const response = await axios.get(baseURL, {
       ...config,
+      withCredentials: true,
       params,
       headers: {
         ...(config?.headers || {}),

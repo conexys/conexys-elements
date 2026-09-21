@@ -131,12 +131,14 @@ const useCustomForm = (
                 try {
                   const postServerURL2: string = Url + 'authTwostep';
                   const config = {
+                    withCredentials: true,
                     headers: {
                       Authorization: `Bearer ${dataform.auth}`,
                       'X-Session-ID': dataform.sessionid,
                       'X-Fingerprint': dataform.fingerprint || visitorId,
                       'X-Session-Type': xSessionType,
                       'Content-Type': 'application/json',
+                      'X-CSRF-Token': authStorage.getCsrfToken() || '',
                     },
                   };
                   const dataload = [dataform, visitorId, login];

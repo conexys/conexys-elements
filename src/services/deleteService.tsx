@@ -37,6 +37,7 @@ export const deleteservice = async (
   if (authorization === true || authorization === 'true') {
     headers = {
       Authorization: `Bearer ${cxauthxc}`,
+      'X-CSRF-Token': authStorage.getCsrfToken() || '',
       'X-Session-ID': datauser.sessionID || '',
       'X-Fingerprint': datauser.fingerprint || '',
       'X-Session-Type': xSessionType,
@@ -44,6 +45,7 @@ export const deleteservice = async (
     };
   } else {
     headers = {
+      'X-CSRF-Token': authStorage.getCsrfToken() || '',
       'Content-Type': 'application/json',
     };
   }
@@ -54,6 +56,7 @@ export const deleteservice = async (
     const response: AxiosResponse<ServiceDataResponse> = await axios.delete(
       deleteURL,
       {
+        withCredentials: true,
         headers,
         data: requestData,
       },

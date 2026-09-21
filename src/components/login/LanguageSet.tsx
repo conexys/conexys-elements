@@ -102,7 +102,10 @@ const LanguageSet: React.FC = () => {
     const fetchLanguages = async (): Promise<void> => {
       try {
         const response: AxiosResponse<LanguagesResponse | Language[]> =
-          await axios.get(postURL, config);
+          await axios.get(postURL, {
+            ...config,
+            withCredentials: true,
+          });
         logConsole(configLogs, 'info', '[Request] ', postURL);
         // Normalize: NestJS returns plain array, some endpoints wrap in { data: [...] }
         const langData = Array.isArray(response.data)

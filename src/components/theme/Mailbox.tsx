@@ -7,6 +7,7 @@
 
 import React from 'react';
 import type { MailboxProps } from '../../types/components/theme.types';
+import { sanitizeHtml } from '../../utilities/sanitizeHtml';
 
 export default function Mailbox({
   msgTitle,
@@ -16,6 +17,7 @@ export default function Mailbox({
   theObj,
   t,
 }: MailboxProps): React.JSX.Element {
+  const safeObj: { __html: string } = { __html: sanitizeHtml(theObj.__html) };
   return (
     <div className="mailbox-email" style={{ marginLeft: '0px' }}>
       <div className="mailbox-email-header mb-3">
@@ -36,7 +38,7 @@ export default function Mailbox({
               </p>
             </div>
             <div className="card-body">
-              <div dangerouslySetInnerHTML={theObj} />
+              <div dangerouslySetInnerHTML={safeObj} />
             </div>
             <div className="card-footer">
               <p className="m-0">

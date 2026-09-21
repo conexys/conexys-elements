@@ -13,11 +13,12 @@ import { io, Socket } from 'socket.io-client';
 import { authStorage } from '../utilities/authStorage';
 import { logConsole } from '../utilities/logConsole';
 import { useConexysConfig } from '../config/ConexysConfig';
+import { Url } from '../constants/global';
 
 // Extraer la base URL del WebSocket a partir de la URL de la API REST
 // Si la API está en "http://localhost:3001/restapi/", el WS va a "http://localhost:3001"
 const getWsBaseUrl = (): string => {
-  const restApi = (window as any).restAPI || 'http://localhost:3001/restapi/';
+  const restApi = Url || 'http://localhost:3001/restapi/';
   // Quitar '/restapi/' o '/restapi' del final
   return restApi.replace(/\/restapi\/?$/, '');
 };
@@ -57,12 +58,20 @@ export const useSocket = (): {
       return;
     }
 
+    // VIII-C3: with an HttpOnly session cookie, JS cannot read the JWT. In that
+    // mode the socket must authenticate via the cookie sent in the handshake
+    // (withCredentials -> same-origin cookies). We only forward `auth.token`
+    // when it is a real JWT (localstorage mode); the 'cookie' marker is not a
+    // token and must never be sent as one.
+    const isCookieMode = authStorage.getSessionTypeValue(configLogs) === 'cookie';
+
     const wsUrl = getWsBaseUrl();
 
     logConsole(configLogs, 'info', '[WS] ', `Conectando a ${wsUrl}...`);
 
     const socket: Socket = io(wsUrl, {
-      auth: { token },
+      ...(isCookieMode ? {} : { auth: { token } }),
+      withCredentials: true,
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionAttempts: Infinity,

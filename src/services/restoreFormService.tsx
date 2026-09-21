@@ -44,8 +44,10 @@ const restoreFormService = async (
   const xSessionType = authStorage.getSessionTypeValue(logs);
 
   const config = {
+    withCredentials: true,
     headers: {
       Authorization: `Bearer ${cxauthxc}`,
+      'X-CSRF-Token': authStorage.getCsrfToken() || '',
       'X-Session-ID': datauser.sessionID || '',
       'X-Fingerprint': datauser.fingerprint || '',
       'X-Session-Type': xSessionType,

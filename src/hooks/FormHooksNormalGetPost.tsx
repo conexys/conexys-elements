@@ -248,6 +248,7 @@ const useCustomForm = (
         try {
           // GET con itemID como query param (FingerprintGuard usa headers)
           const response = await axios.get(getServerURL, {
+            withCredentials: true,
             headers: config.headers,
             params: { itemID: id },
           });

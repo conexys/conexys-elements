@@ -19,6 +19,7 @@ import type {
   CheckUsernameRequest,
 } from '../../../../types/components/form.types';
 import { useConexysConfig } from '../../../../config/ConexysConfig';
+import { authStorage } from '../../../../utilities/authStorage';
 
 /**
  * URL for checking the existence of a username.
@@ -62,7 +63,14 @@ const checkExistsUsername = async (
     const { data }: { data: ApiResponseString } = await axios.post(
       postURLusername,
       requestData,
-      config,
+      {
+        ...config,
+        withCredentials: true,
+        headers: {
+          ...(config?.headers || {}),
+          'X-CSRF-Token': authStorage.getCsrfToken() || '',
+        },
+      },
     );
     logConsole(configLogs, 'info', '[Request] ', postURLusername);
     logConsole(configLogs, 'data', '', data.result);
@@ -91,7 +99,14 @@ const checkExistsMail = async (
     const { data }: { data: ApiResponseString } = await axios.post(
       postURLmail,
       requestData,
-      config,
+      {
+        ...config,
+        withCredentials: true,
+        headers: {
+          ...(config?.headers || {}),
+          'X-CSRF-Token': authStorage.getCsrfToken() || '',
+        },
+      },
     );
     logConsole(configLogs, 'info', '[Request] ', postURLmail);
     logConsole(configLogs, 'data', '', data.result);

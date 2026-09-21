@@ -117,6 +117,7 @@ export { Url } from './constants/global';
 export { authStorage } from './utilities/authStorage';
 export { checkAuth } from './utilities/checkAuth';
 export { logConsole } from './utilities/logConsole';
+export { sanitizeHtml } from './utilities/sanitizeHtml';
 export { default as GenerateRandomPassword } from './utilities/GenerateRandomPassword';
 
 // Export configuration
