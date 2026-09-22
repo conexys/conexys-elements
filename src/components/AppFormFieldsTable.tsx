@@ -266,6 +266,9 @@ export default function AppFormFieldsTable({
                 block.pattern || (block.validate && block.validate.pattern),
             } as ValidationRules,
             items: block.items || [],
+            // A-ENUM-2b: contexto admin para validación de disponibilidad real.
+            itemID: id1,
+            adminCheck: show === 'admin',
           },
           nouser || '',
         ),
@@ -306,6 +309,9 @@ export default function AppFormFieldsTable({
                 block.pattern || (block.validate && block.validate.pattern),
             } as ValidationRules,
             items: block.items || [],
+            // A-ENUM-2b: contexto admin para validación de disponibilidad real.
+            itemID: id1,
+            adminCheck: show === 'admin',
           },
           nouser || '',
         ),

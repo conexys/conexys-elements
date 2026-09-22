@@ -17,6 +17,9 @@ import type {
   ApiResponseString,
   CheckMailRequest,
   CheckUsernameRequest,
+  AdminCheckMailRequest,
+  AdminCheckUsernameRequest,
+  AdminAvailabilityResponse,
 } from '../../../../types/components/form.types';
 import { useConexysConfig } from '../../../../config/ConexysConfig';
 import { authStorage } from '../../../../utilities/authStorage';
@@ -32,6 +35,18 @@ const postURLusername: string = Url + 'checkusername';
  * @type {string}
  */
 const postURLmail: string = Url + 'checkmail';
+
+/**
+ * URL admin-scoped para verificar disponibilidad de username (A-ENUM-2b).
+ * @type {string}
+ */
+const postURLAdminUsername: string = Url + 'admincheckusername';
+
+/**
+ * URL admin-scoped para verificar disponibilidad de email (A-ENUM-2b).
+ * @type {string}
+ */
+const postURLAdminMail: string = Url + 'admincheckmail';
 
 /**
  * Axios configuration for API calls.
@@ -119,3 +134,88 @@ const checkExistsMail = async (
 };
 
 export { checkExistsUsername, checkExistsMail };
+
+/**
+ * Asynchronously checks the availability of a username for the admin panel.
+ *
+ * A-ENUM-2b: golpea al endpoint admin-scoped `admincheckusername` (protegido por
+ * `admin.all_read`). A diferencia del público `checkExistsUsername` (que devuelve
+ * un booleano difuso basado en 'Valid'), devuelve el estado real de disponibilidad.
+ *
+ * @async
+ * @function
+ * @param {AdminCheckUsernameRequest} params - username a verificar + `itemID` (cx_users_id en edición).
+ * @returns {Promise<AdminAvailabilityResponse>} `{ available, isCurrent }`.
+ */
+const checkExistsUsernameAdmin = async (
+  { username, itemID }: AdminCheckUsernameRequest,
+  configLogs: ReturnType<typeof useConexysConfig>,
+): Promise<AdminAvailabilityResponse> => {
+  const requestData: AdminCheckUsernameRequest = { username, itemID };
+  logConsole(configLogs, 'debug', '[Payload admincheckusername] ', requestData);
+  try {
+    const { data }: { data: AdminAvailabilityResponse } = await axios.post(
+      postURLAdminUsername,
+      requestData,
+      {
+        ...config,
+        withCredentials: true,
+        headers: {
+          ...(config?.headers || {}),
+          'X-CSRF-Token': authStorage.getCsrfToken() || '',
+        },
+      },
+    );
+    logConsole(configLogs, 'info', '[Request] ', postURLAdminUsername);
+    logConsole(configLogs, 'data', '', data);
+    return data;
+  } catch (err: unknown) {
+    logConsole(configLogs, 'error', '', err);
+    console.error(err);
+    // Ante error de red/permiso, devolvemos estado conservador (no disponible)
+    // para que el formulario no permita guardar un valor dudoso.
+    return { available: false, isCurrent: false };
+  }
+};
+
+/**
+ * Asynchronously checks the availability of an email for the admin panel.
+ *
+ * A-ENUM-2b: golpea al endpoint admin-scoped `admincheckmail`. Misma semántica
+ * que {@link checkExistsUsernameAdmin}.
+ *
+ * @async
+ * @function
+ * @param {AdminCheckMailRequest} params - email a verificar + `itemID`.
+ * @returns {Promise<AdminAvailabilityResponse>} `{ available, isCurrent }`.
+ */
+const checkExistsMailAdmin = async (
+  { email, itemID }: AdminCheckMailRequest,
+  configLogs: ReturnType<typeof useConexysConfig>,
+): Promise<AdminAvailabilityResponse> => {
+  const requestData: AdminCheckMailRequest = { email, itemID };
+  logConsole(configLogs, 'debug', '[Payload admincheckmail] ', requestData);
+  try {
+    const { data }: { data: AdminAvailabilityResponse } = await axios.post(
+      postURLAdminMail,
+      requestData,
+      {
+        ...config,
+        withCredentials: true,
+        headers: {
+          ...(config?.headers || {}),
+          'X-CSRF-Token': authStorage.getCsrfToken() || '',
+        },
+      },
+    );
+    logConsole(configLogs, 'info', '[Request] ', postURLAdminMail);
+    logConsole(configLogs, 'data', '', data);
+    return data;
+  } catch (err: unknown) {
+    logConsole(configLogs, 'error', '', err);
+    console.error(err);
+    return { available: false, isCurrent: false };
+  }
+};
+
+export { checkExistsUsernameAdmin, checkExistsMailAdmin };

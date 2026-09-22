@@ -33,6 +33,10 @@ export interface FormBlock {
     pattern?: string;
   };
   items?: any[];
+  /** `cx_users_id` del registro en edición (A-ENUM-2b, formulario admin). */
+  itemID?: string;
+  /** Activa validación admin-scoped de disponibilidad (A-ENUM-2b). */
+  adminCheck?: boolean;
 }
 
 interface ButtonBlock {
@@ -184,6 +188,16 @@ interface InputTextBlock {
   ref?: string;
   style?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  /**
+   * `cx_users_id` del registro en edición (A-ENUM-2b). Presente cuando el
+   * formulario es admin-scoped; permite el caso "es el propio registro".
+   */
+  itemID?: string;
+  /**
+   * Indica que este input debe validar disponibilidad contra los endpoints
+   * admin-scoped (`admincheckusername`/`admincheckmail`) en lugar del público.
+   */
+  adminCheck?: boolean;
 }
 
 export interface InputTextProps {
@@ -305,4 +319,32 @@ export interface CheckMailRequest {
 export interface CheckUsernameRequest {
   username: string;
   sessionID?: string;
+}
+
+/**
+ * Payload para el endpoint admin-scoped `admincheckusername` (A-ENUM-2b).
+ * `itemID` es el `cx_users_id` del registro en edición (para el caso
+ * "es el propio registro").
+ */
+export interface AdminCheckUsernameRequest {
+  username: string;
+  itemID?: string;
+}
+
+/**
+ * Payload para el endpoint admin-scoped `admincheckmail` (A-ENUM-2b).
+ */
+export interface AdminCheckMailRequest {
+  email: string;
+  itemID?: string;
+}
+
+/**
+ * Respuesta de los endpoints admin de disponibilidad: devuelve el estado real
+ * (a diferencia del endpoint público, que siempre responde 'Valid' neutro).
+ * NUNCA revela quién ocupa el valor, solo el estado.
+ */
+export interface AdminAvailabilityResponse {
+  available: boolean;
+  isCurrent: boolean;
 }

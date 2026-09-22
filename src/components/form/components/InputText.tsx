@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import { checkExistsUsername, checkExistsMail } from './validation/Validation';
+import { checkExistsUsername, checkExistsMail, checkExistsUsernameAdmin, checkExistsMailAdmin } from './validation/Validation';
 import { useTranslation } from 'react-i18next';
 import { Uservalidationerror } from '../../../components/index';
 import TextField from '@mui/material/TextField';
@@ -50,22 +50,46 @@ const InputText: React.FC<InputTextProps> = React.memo(
 
         try {
           if (block.validate.check === 'email' && value) {
-            const mailexist = await checkExistsMail(
-              { email: value, sessionID: session },
-              configLogs,
-            );
-            if (!mailexist) {
-              setErrorState(true, t('error.email_already_exists'));
-              return;
+            if (block.adminCheck) {
+              // A-ENUM-2b: validación admin-scoped (disponibilidad real).
+              const mailAdmin = await checkExistsMailAdmin(
+                { email: value, itemID: block.itemID },
+                configLogs,
+              );
+              if (!mailAdmin.available && !mailAdmin.isCurrent) {
+                setErrorState(true, t('error.email_already_exists'));
+                return;
+              }
+            } else {
+              const mailexist = await checkExistsMail(
+                { email: value, sessionID: session },
+                configLogs,
+              );
+              if (!mailexist) {
+                setErrorState(true, t('error.email_already_exists'));
+                return;
+              }
             }
           } else if (block.validate.check === 'username' && value) {
-            const usernameExist = await checkExistsUsername(
-              { username: value, sessionID: session },
-              configLogs,
-            );
-            if (!usernameExist) {
-              setErrorState(true, t('error.username_is_not_valid'));
-              return;
+            if (block.adminCheck) {
+              // A-ENUM-2b: validación admin-scoped (disponibilidad real).
+              const usernameAdmin = await checkExistsUsernameAdmin(
+                { username: value, itemID: block.itemID },
+                configLogs,
+              );
+              if (!usernameAdmin.available && !usernameAdmin.isCurrent) {
+                setErrorState(true, t('error.username_already_exists'));
+                return;
+              }
+            } else {
+              const usernameExist = await checkExistsUsername(
+                { username: value, sessionID: session },
+                configLogs,
+              );
+              if (!usernameExist) {
+                setErrorState(true, t('error.username_is_not_valid'));
+                return;
+              }
             }
           }
 
