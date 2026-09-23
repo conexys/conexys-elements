@@ -57,6 +57,7 @@ export default function AppFormFields({
   show,
   feedback,
   method = 'post',
+  allowEmptyIdFetch = false,
 }: AppFormFieldsProps): React.JSX.Element | null {
   const configLogs = useConexysConfig();
   const [t] = useTranslation('global');
@@ -138,6 +139,7 @@ export default function AppFormFields({
     method,
     'post',
     'get',
+    allowEmptyIdFetch,
   ); //Render Form
 
   if (!post) return null;

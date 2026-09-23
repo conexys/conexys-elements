@@ -59,6 +59,7 @@ const useCustomForm = (
   method: 'post' | 'patch' = 'post',
   restoreMethod: 'post' | 'patch' = 'post',
   fetchMethod: 'post' | 'get' = 'post',
+  allowEmptyIdFetch: boolean = false,
 ): UseCustomFormReturn => {
   const configLogs = useConexysConfig();
   const [t] = useTranslation('global');
@@ -322,8 +323,11 @@ const useCustomForm = (
   useEffect(() => {
     const setFp = async (): Promise<void> => {
       setCheckdata(false);
-      // Only fetch if we have a record id (skip for new/empty id even with GET method)
-      if (id !== '') {
+      // Fetch if we have a record id, OR if the form opts into fetching the
+      // authenticated user's own record without an id (e.g. edit own profile,
+      // where the backend resolves the current user from the HttpOnly JWT
+      // cookie). allowEmptyIdFetch is only enabled by the profile form.
+      if (id !== '' || allowEmptyIdFetch) {
         const visitorIdHash: string = await getOrSetFingerprint(
           fpHash,
           configLogs,
@@ -336,7 +340,10 @@ const useCustomForm = (
         try {
           let response;
           if (fetchMethod === 'get') {
-            const url = getServerURL + id;
+            // When there is no id, GET the bare getServerURL (authenticated
+            // self-profile) instead of appending an empty path segment.
+            const url =
+              id !== '' ? getServerURL + id : getServerURL;
             response = await axios.get(url, {
               ...config,
               withCredentials: true,
@@ -380,7 +387,7 @@ const useCustomForm = (
       }
     };
     setFp();
-  }, [id]);
+  }, [id, allowEmptyIdFetch]);
 
   return {
     handleFormSubmit,

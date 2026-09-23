@@ -46,4 +46,5 @@ export interface AppFormFieldsProps {
   show?: string;
   feedback: string;
   method?: 'post' | 'patch';
+  allowEmptyIdFetch?: boolean;
 }
