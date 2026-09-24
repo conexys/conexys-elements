@@ -1,43 +1,43 @@
 # Conexys Elements
 
-Librería de componentes React (TypeScript) que centraliza la interfaz de usuario del ecosistema **Conexys**: formularios, cabeceras, diálogos, tema claro/oscuro, estado del backend, sistema de permisos, servicios HTTP, WebSocket y utilidades de autenticación.
+A React (TypeScript) component library that centralizes the user interface of the **Conexys** ecosystem: forms, headers, dialogs, light/dark theme, backend status, permission system, HTTP services, WebSocket, and authentication utilities.
 
-> **TypeScript nativo.** Tipos incluidos: tu IDE te dará autocompletado completo sin configuración extra.
+> **Native TypeScript.** Types included: your IDE will give you full autocomplete with no extra configuration.
 
 ---
 
-## Índice
+## Table of Contents
 
-- [Instalación](#instalación)
-- [Dependencias (peerDependencies)](#dependencias-peerdependencies)
-- [Inicialización](#inicialización)
-- [Proveedores y configuración](#proveedores-y-configuración)
-- [Sistema de autenticación (`authStorage`)](#sistema-de-autenticación-authstorage)
-- [Componentes](#componentes)
-- [Formularios](#formularios)
+- [Installation](#installation)
+- [Dependencies (peerDependencies)](#dependencies-peerdependencies)
+- [Initialization](#initialization)
+- [Providers and configuration](#providers-and-configuration)
+- [Authentication system (`authStorage`)](#authentication-system-authstorage)
+- [Components](#components)
+- [Forms](#forms)
 - [Hooks](#hooks)
-- [Servicios HTTP](#servicios-http)
-- [Sistema de permisos](#sistema-de-permisos)
-- [Utilidades](#utilidades)
-- [Internacionalización (i18n)](#internacionalización-i18n)
-- [Desarrollo](#desarrollo)
-- [Licencia](#licencia)
+- [HTTP services](#http-services)
+- [Permission system](#permission-system)
+- [Utilities](#utilities)
+- [Internationalization (i18n)](#internationalization-i18n)
+- [Development](#development)
+- [License](#license)
 
 ---
 
-## Instalación
+## Installation
 
 ```bash
 npm install conexys-elements
-# o con yarn
+# or with yarn
 yarn add conexys-elements
-# o con pnpm
+# or with pnpm
 pnpm add conexys-elements
 ```
 
-## Dependencias (peerDependencies)
+## Dependencies (peerDependencies)
 
-Estas dependencias deben instalarse en tu proyecto consumidor (no vienen empaquetadas):
+These dependencies must be installed in your consumer project (they are not bundled):
 
 ```
 @fingerprintjs/fingerprintjs  ^5.2.0
@@ -60,19 +60,19 @@ sweetalert2                   ^11.26.25
 sweetalert2-react-content     ^5.1.2
 ```
 
-Instálalas de una vez:
+Install them all at once:
 
 ```bash
 npm install react react-dom @mui/material @mui/icons-material axios react-i18next react-helmet-async react-router-dom sweetalert2 sweetalert2-react-content date-fns jodit-react react-select react-hook-form react-transition-group @fingerprintjs/fingerprintjs socket.io-client prop-types
 ```
 
-> ⚙️ **Dependencias internas** (se resuelven automáticamente): `dompurify`, `material-react-table`, `react-bootstrap`, `react-icons`.
+> ⚙️ **Internal dependencies** (resolved automatically): `dompurify`, `material-react-table`, `react-bootstrap`, `react-icons`.
 
 ---
 
-## Inicialización
+## Initialization
 
-En el componente raíz de tu aplicación, inicializa los servicios y componentes compartidos **una sola vez**:
+In your application's root component, initialize the shared services and components **only once**:
 
 ```tsx
 import {
@@ -83,8 +83,8 @@ import { useEffect } from 'react';
 
 function App() {
   useEffect(() => {
-    initializeSharedServices();   // configura los servicios HTTP (base URL, auth)
-    initializeSharedComponents(); // configura servicios compartidos de UI
+    initializeSharedServices();   // configures HTTP services (base URL, auth)
+    initializeSharedComponents(); // configures shared UI services
   }, []);
 
   return <></>;
@@ -93,11 +93,11 @@ function App() {
 
 ---
 
-## Proveedores y configuración
+## Providers and configuration
 
-### `ConexysConfigProvider` (obligatorio)
+### `ConexysConfigProvider` (required)
 
-Proporciona la configuración global (modo desarrollo, flags de logging). **Envuelve toda tu app** con él:
+Provides global configuration (development mode, logging flags). **Wrap your whole app** with it:
 
 ```tsx
 import { ConexysConfigProvider } from 'conexys-elements';
@@ -114,17 +114,17 @@ function App() {
         developmentMode: import.meta.env.VITE_DEVELOPMENT_MODE === 'true',
       }}
     >
-      {/* resto de la app */}
+      {/* rest of the app */}
     </ConexysConfigProvider>
   );
 }
 ```
 
-Helpers expuestos: `useConexysConfig()`, `isDevelopmentMode`.
+Exposed helpers: `useConexysConfig()`, `isDevelopmentMode`.
 
 ### `ThemeContextProvider`
 
-Tema claro/oscuro basado en MUI. Detecta la preferencia del sistema (`prefers-color-scheme`) y persiste la elección en `localStorage.displaymode`:
+Light/dark theme based on MUI. Detects the system preference (`prefers-color-scheme`) and persists the choice in `localStorage.displaymode`:
 
 ```tsx
 import { ThemeContextProvider } from 'conexys-elements';
@@ -132,7 +132,7 @@ import { ThemeContextProvider } from 'conexys-elements';
 function App() {
   return (
     <ThemeContextProvider>
-      {/* tu UI */}
+      {/* your UI */}
     </ThemeContextProvider>
   );
 }
@@ -140,130 +140,130 @@ function App() {
 
 ### `BackendStatusProvider`
 
-Detecta si el backend está disponible. Renderiza los hijos inmediatamente (arranque optimista) y comprueba la conexión periódicamente; si cae, muestra una página "offline" y recarga al recuperarse:
+Detects whether the backend is available. Renders the children immediately (optimistic startup) and checks the connection periodically; if it goes down, it shows an "offline" page and reloads once it recovers:
 
 ```tsx
 import { BackendStatusProvider } from 'conexys-elements';
 
 <BackendStatusProvider
-  checkInterval={30000}          // ms entre comprobaciones (default 30000)
-  healthEndpoint="health"        // endpoint de salud (default 'health')
-  // fallbackComponent={<MiOffline/>}
+  checkInterval={30000}          // ms between checks (default 30000)
+  healthEndpoint="health"        // health endpoint (default 'health')
+  // fallbackComponent={<MyOffline/>}
 >
   {children}
 </BackendStatusProvider>
 ```
 
-Se expone además `useBackendStatus()` → `{ isConnected, isChecking, lastCheck, checkConnection }` y el componente `BackendOfflinePage`.
+It also exposes `useBackendStatus()` → `{ isConnected, isChecking, lastCheck, checkConnection }` and the `BackendOfflinePage` component.
 
 ---
 
-## Sistema de autenticación (`authStorage`)
+## Authentication system (`authStorage`)
 
-> 🔐 **Modo cookie (actual).** El JWT se almacena **solo en cookies `HttpOnly`** (`cxauthxc`), inaccesibles desde JavaScript. El token nunca se escribe en `localStorage`, evitando su lectura vía XSS.
+> 🔐 **Cookie mode (current).** The JWT is stored **only in `HttpOnly` cookies** (`cxauthxc`), inaccessible from JavaScript. The token is never written to `localStorage`, preventing its theft via XSS.
 
-API principal:
+Main API:
 
-| Método | Descripción |
+| Method | Description |
 |---|---|
-| `initialize(configLogs)` | Inicializa la config de sesión (deduplicada, sin cascada de `getsettings`). |
-| `getAuthToken()` | Devuelve el marcador `'cookie'` (truthy, nunca el JWT real; la cookie es HttpOnly). |
-| `hasActiveSession()` | Comprueba sesión activa real (cookies `cx_session` + `csrf_token`). **Úsalo en las gates que deciden si mostrar el dashboard.** |
-| `getCsrfToken()` | Token CSRF (`csrf_token`) para el esquema *double-submit*. |
-| `getSessionId()` / `setSessionId()` | Session ID vía cookie legible `cx_session`. |
-| `getSessionTypeValue()` | Devuelve `'cookie'`. |
-| `removeAuthData()` | Limpia cookies y `localStorage` al hacer logout. |
-| `refreshTypeSession()` | Relee el medio de sesión desde la BD (solo en boundaries de auth, ej. login). |
+| `initialize(configLogs)` | Initializes the session config (deduplicated, without a cascade of `getsettings`). |
+| `getAuthToken()` | Returns the `'cookie'` marker (truthy, never the real JWT; the cookie is HttpOnly). |
+| `hasActiveSession()` | Checks for a real active session (`cx_session` + `csrf_token` cookies). **Use it in the gates that decide whether to show the dashboard.** |
+| `getCsrfToken()` | CSRF token (`csrf_token`) for the *double-submit* scheme. |
+| `getSessionId()` / `setSessionId()` | Session ID via the readable `cx_session` cookie. |
+| `getSessionTypeValue()` | Returns `'cookie'`. |
+| `removeAuthData()` | Clears cookies and `localStorage` on logout. |
+| `refreshTypeSession()` | Re-reads the session medium from the DB (only on auth boundaries, e.g. login). |
 
-Flujo típico en login:
+Typical login flow:
 
 ```tsx
 import { authStorage } from 'conexys-elements';
 
-await authStorage.initialize(configLogs);   // resuelve el medio de sesión
+await authStorage.initialize(configLogs);   // resolves the session medium
 await authStorage.setSessionId(sessionId, configLogs);
-// el backend emite cxauthxc (HttpOnly) + csrf_token; JS solo ve el marcador
+// the backend sets cxauthxc (HttpOnly) + csrf_token; JS only sees the marker
 ```
 
 ---
 
-## Componentes
+## Components
 
-Importa los componentes desde el paquete:
+Import the components from the package:
 
 ```tsx
 import { Card, Loading, AppHeaderPage, NotFound } from 'conexys-elements';
 ```
 
-### Cabeceras y páginas
+### Headers and pages
 
-| Componente | Descripción |
+| Component | Description |
 |---|---|
-| `AppHeaderPage` | Cabecera de página con título, breadcrumb, botón de favoritos y toggle del menú. |
-| `AppHeaderPage404` | Cabecera simplificada para 404 (sin favoritos). |
-| `AppSetHeaderTitle` | Establece el `<title>` dinámicamente (Helmet + nombre del sitio desde backend). |
-| `AppError` | Página de error con ilustración SVG e instrucciones traducidas. |
-| `NotFound` | Página 404 traducida con enlace a home. |
-| `ErrorBoundary` | Captura errores de renderizado y muestra modal (Close/Reload). Filtra errores "conocidos". |
-| `Uservalidationerror` | Limpia datos de usuario y redirige a `/login`. |
+| `AppHeaderPage` | Page header with title, breadcrumb, favorites button and menu toggle. |
+| `AppHeaderPage404` | Simplified header for the 404 page (no favorites). |
+| `AppSetHeaderTitle` | Sets the `<title>` dynamically (Helmet + site name from the backend). |
+| `AppError` | Error page with SVG illustration and translated instructions. |
+| `NotFound` | Translated 404 page with a link back home. |
+| `ErrorBoundary` | Catches render errors and shows a modal (Close/Reload). Filters "known" errors. |
+| `Uservalidationerror` | Clears user data and redirects to `/login`. |
 
-### Contenido y datos
+### Content and data
 
-| Componente | Descripción |
+| Component | Description |
 |---|---|
-| `AppDataSettings` | Pide config al backend (`getsettings`) y renderiza el contenido devuelto. |
-| `AppDataSettingsHTML` | Igual, pero renderiza HTML sanitizado (`sanitizeHtml`). |
-| `AppFormFields` | Formulario completo de usuario autenticado desde config de campos. |
-| `AppFormFieldsTable` | Variante de formulario orientada a tablas (CRUD). |
-| `AppFormFieldsNoUser` | Formulario sin usuario (registro/recuperación). |
-| `AppFormFieldsFromConfig` | Formulario 100 % desde configuración externa (multi-formulario). |
+| `AppDataSettings` | Requests config from the backend (`getsettings`) and renders the returned content. |
+| `AppDataSettingsHTML` | Same, but renders sanitized HTML (`sanitizeHtml`). |
+| `AppFormFields` | Complete authenticated-user form from field config. |
+| `AppFormFieldsTable` | Table-oriented form variant (CRUD). |
+| `AppFormFieldsNoUser` | Form without a user (registration/recovery). |
+| `AppFormFieldsFromConfig` | 100% config-driven form (multi-form). |
 
-### Diálogos y login
+### Dialogs and login
 
-| Componente | Descripción |
+| Component | Description |
 |---|---|
-| `AppDialogModal` | Modal MUI estilizado con tipos (`Normal`, `Delete`, `DeleteMax`, `Restore`). |
-| `LanguageSet` | Selector de idioma para login/registro. |
+| `AppDialogModal` | Styled MUI modal with types (`Normal`, `Delete`, `DeleteMax`, `Restore`). |
+| `LanguageSet` | Language selector for login/registration. |
 
-### Tema
+### Theme
 
-| Componente | Descripción |
+| Component | Description |
 |---|---|
-| `Card` | Tarjeta base de contenido. |
-| `CardDashboard` | Tarjeta de dashboard (cabecera/estadísticas). |
-| `CardUser` | Tarjeta de perfil de usuario. |
-| `Loading` | Estado de carga con spinner; maneja `loading`/`error`. |
-| `Mailbox` | Widget de buzón/correo. |
-| `MailTemplateWidget` | Widget de plantillas de correo. |
-| `MessagesBlock` | Bloque de mensajes/chat. |
-| `Timeline` | Línea de tiempo de eventos. |
-| `UserWidget` | Widget de usuario (avatar/estado). |
+| `Card` | Base content card. |
+| `CardDashboard` | Dashboard card (header/statistics). |
+| `CardUser` | User profile card. |
+| `Loading` | Loading state with spinner; handles `loading`/`error`. |
+| `Mailbox` | Inbox/mail widget. |
+| `MailTemplateWidget` | Mail templates widget. |
+| `MessagesBlock` | Messages/chat block. |
+| `Timeline` | Event timeline. |
+| `UserWidget` | User widget (avatar/status). |
 
-### Tablas CRUD
+### CRUD tables
 
-| Export | Descripción |
+| Export | Description |
 |---|---|
-| `Table` | Tabla CRUD basada en Material React Table con acciones. |
-| `ActionButtons` | Botones de acción de fila (editar/borrar/restaurar). |
-| `useTableData` | Hook de obtención de datos para tablas. |
-| `useTableDataInstall` | Hook de datos de tabla para el instalador. |
+| `Table` | CRUD table based on Material React Table with actions. |
+| `ActionButtons` | Row action buttons (edit/delete/restore). |
+| `useTableData` | Data-fetching hook for tables. |
+| `useTableDataInstall` | Table data hook for the installer. |
 
-Ejemplo con `Card` + `Loading` + `ActionButtons`:
+Example with `Card` + `Loading` + `ActionButtons`:
 
 ```tsx
 import { Card, Loading, ActionButtons } from 'conexys-elements';
 
 function MyComponent() {
   return (
-    <Card title="Mi tarjeta">
+    <Card title="My card">
       <Loading type="appnotifications" loading={false} error={undefined}>
-        Contenido
+        Content
       </Loading>
       <ActionButtons
-        onSubmit={() => console.log('Guardado')}
-        onCancel={() => console.log('Cancelado')}
-        submitText="Guardar"
-        cancelText="Cancelar"
+        onSubmit={() => console.log('Saved')}
+        onCancel={() => console.log('Cancelled')}
+        submitText="Save"
+        cancelText="Cancel"
       />
     </Card>
   );
@@ -272,13 +272,13 @@ function MyComponent() {
 
 ---
 
-## Formularios
+## Forms
 
-El motor central es `RenderForm`, que recibe una lista de `FormInputs` y renderiza los controles apropiados. Los componentes atómicos disponibles:
+The core engine is `RenderForm`, which receives a list of `FormInputs` and renders the appropriate controls. The atomic components available:
 
 `Button` · `Checkbox` · `Heading` · `Image` · `Info` · `InputFile` · `InputPassword` · `InputText` · `InputWYSIWYG` · `Radiobutton` · `Select` · `Switch` · `Text`
 
-Renderizado + validación:
+Rendering + validation:
 
 ```tsx
 import { RenderForm } from 'conexys-elements';
@@ -286,30 +286,30 @@ import { RenderForm } from 'conexys-elements';
 <RenderForm
   config={formInputs}            // FormInputs[]
   onSubmit={handleSubmit}
-  // callbacks de cambio/validación gestionados internamente
+  // change/validation callbacks handled internally
 />
 ```
 
-Los hooks de formulario asociados son `useCustomForm*` (ver [Hooks](#hooks)).
+The associated form hooks are `useCustomForm*` (see [Hooks](#hooks)).
 
 ---
 
 ## Hooks
 
-| Hook | Descripción |
+| Hook | Description |
 |---|---|
-| `useCustomFormNormal` | Formulario autenticado (POST). |
-| `useCustomFormGetPost` | GET previo (cargar) + POST (guardar). |
-| `useCustomFormMulti` | Formularios múltiples/configurables. |
-| `useCustomFormNoUser` | Formularios sin usuario (registro/recuperación). |
-| `useCustomFormUpload` | Subida de archivos (multipart). |
-| `useCustomFormUploadPatch` | Variante PATCH de subida. |
-| `useFingerprintJS` | Fingerprint del navegador (identificación de dispositivo). |
-| `useLanguageSync` | Sincroniza idioma con el almacenamiento/contexto. |
-| `usePermission` | Comprobación granular de permisos contra el backend. |
-| `useSocket` | Conexión WebSocket (socket.io) con reconexión automática. |
-| `useZoomPrevention` | Previene zoom (gestos/teclas) en contextos específicos. |
-| `MRT_Localization` | Localización en español para Material React Table. |
+| `useCustomFormNormal` | Authenticated form (POST). |
+| `useCustomFormGetPost` | Prior GET (load) + POST (save). |
+| `useCustomFormMulti` | Multiple/configurable forms. |
+| `useCustomFormNoUser` | Forms without a user (registration/recovery). |
+| `useCustomFormUpload` | File upload (multipart). |
+| `useCustomFormUploadPatch` | PATCH upload variant. |
+| `useFingerprintJS` | Browser fingerprint (device identification). |
+| `useLanguageSync` | Synchronizes language with storage/context. |
+| `usePermission` | Granular permission checking against the backend. |
+| `useSocket` | WebSocket connection (socket.io) with automatic reconnection. |
+| `useZoomPrevention` | Prevents zoom (gestures/keys) in specific contexts. |
+| `MRT_Localization` | Spanish localization for Material React Table. |
 
 ### `useSocket`
 
@@ -320,35 +320,35 @@ const { socketRef, socketState } = useSocket();
 // socketState: { connected: boolean, socketId: string | null }
 ```
 
-Se conecta automáticamente si hay token; en modo cookie autentica vía `withCredentials` (cookies same-origin) y se reconecta de forma indefinida.
+It connects automatically if there is a token; in cookie mode it authenticates via `withCredentials` (same-origin cookies) and reconnects indefinitely.
 
 ---
 
-## Servicios HTTP
+## HTTP services
 
-Servicios genéricos y extendidos para consumir la API REST de Conexys.
+Generic and extended services for consuming the Conexys REST API.
 
-### Genéricos
+### Generic
 
-| Servicio | Descripción |
+| Service | Description |
 |---|---|
-| `postservice` / `postService` | POST genérico. |
-| `getservice` / `getService` | GET genérico. |
-| `patchservice` / `patchService` | PATCH genérico. |
-| `deleteservice` / `deleteService` | DELETE genérico. |
-| `postFormService` | POST de formulario. |
-| `patchFormService` | PATCH de formulario. |
-| `deleteFormService` | DELETE de formulario. |
-| `restoreFormService` | Restauración de elementos. |
+| `postservice` / `postService` | Generic POST. |
+| `getservice` / `getService` | Generic GET. |
+| `patchservice` / `patchService` | Generic PATCH. |
+| `deleteservice` / `deleteService` | Generic DELETE. |
+| `postFormService` | Form POST. |
+| `patchFormService` | Form PATCH. |
+| `deleteFormService` | Form DELETE. |
+| `restoreFormService` | Item restore. |
 
-### Extendidos (dominio)
+### Extended (domain)
 
 - `postServiceExtended` → `servicePostBasic`, `serviceData`, `servicePost`, `servicePost2`, `servicePostData`, `serviceLockscreen`, `serviceLogout`, `serviceFavorites`, `serviceGetFavorites`.
 - `getServiceExtended` → `getServiceBasic`, `getservice2`, `getServiceData`.
 - `patchServiceExtended` → `servicePatch2`.
 - `deleteServiceExtended` → `serviceDelete2`.
 
-Ejemplo con un servicio extendido:
+Example with an extended service:
 
 ```tsx
 import { serviceData } from 'conexys-elements';
@@ -364,13 +364,13 @@ await serviceData(
 
 ---
 
-## Sistema de permisos
+## Permission system
 
-Control de acceso granular por módulo.
+Granular per-module access control.
 
-- **Contexto:** `PermissionProvider`, `usePermissionContext`.
+- **Context:** `PermissionProvider`, `usePermissionContext`.
 - **Hook:** `usePermission(options)` → `{ hasPermission, loading }`.
-- **Componente:** `PermissionGate` — renderiza `children` si hay permiso, `fallback` si no, `loadingComponent` mientras carga.
+- **Component:** `PermissionGate` — renders `children` if permission is granted, `fallback` if not, and `loadingComponent` while loading.
 
 ```tsx
 import { PermissionGate } from 'conexys-elements';
@@ -378,25 +378,25 @@ import { PermissionGate } from 'conexys-elements';
 <PermissionGate
   permissionrequired="users.edit"
   permissiontype="module"
-  fallback={<span>Sin acceso</span>}
+  fallback={<span>No access</span>}
 >
-  <BotonEditar />
+  <EditButton />
 </PermissionGate>
 ```
 
 ---
 
-## Utilidades
+## Utilities
 
-| Utilidad | Descripción |
+| Utility | Description |
 |---|---|
-| `authStorage` | Gestión de credenciales/tokens (ver sección dedicada). |
-| `checkAuth` | Verificación de autenticación. |
-| `sanitizeHtml` | Sanitización de HTML (DOMPurify). |
-| `GenerateRandomPassword` | Generador de contraseñas aleatorias. |
-| `logConsole` | Log centralizado condicionado por config. |
-| `getOrSetFingerprint` | Obtiene o genera el fingerprint del dispositivo. |
-| `Url` | URL base del backend (constante). |
+| `authStorage` | Credentials/token management (see the dedicated section). |
+| `checkAuth` | Authentication check. |
+| `sanitizeHtml` | HTML sanitization (DOMPurify). |
+| `GenerateRandomPassword` | Random password generator. |
+| `logConsole` | Centralized config-conditional logging. |
+| `getOrSetFingerprint` | Gets or generates the device fingerprint. |
+| `Url` | Backend base URL (constant). |
 
 ### `GenerateRandomPassword`
 
@@ -414,13 +414,13 @@ const pass = GenerateRandomPassword({
 
 ---
 
-## Internacionalización (i18n)
+## Internationalization (i18n)
 
-El paquete incluye traducciones para el namespace `global` en **9 idiomas**: `ca`, `de`, `en`, `es`, `eu`, `fr`, `gl`, `it`, `pt`.
+The package includes translations for the `global` namespace in **9 languages**: `ca`, `de`, `en`, `es`, `eu`, `fr`, `gl`, `it`, `pt`.
 
-Estructura de `global.json`: `general`, `error`, `languages`.
+`global.json` structure: `general`, `error`, `languages`.
 
-Configura `i18next` apuntando a `node_modules/conexys-elements/dist/language/`:
+Configure `i18next` pointing to `node_modules/conexys-elements/dist/language/`:
 
 ```tsx
 i18n.use(initReactI18next).init({
@@ -433,30 +433,30 @@ i18n.use(initReactI18next).init({
 
 ---
 
-## Desarrollo
+## Development
 
 ```bash
-npm install          # instala dependencias
-npm run build        # compila (rollup → CJS + ESM en dist/)
-npm run type-check   # verifica tipos sin compilar
+npm install          # installs dependencies
+npm run build        # builds (rollup → CJS + ESM in dist/)
+npm run type-check   # type-checks without building
 npm run type-check:watch
 npm run lint         # eslint
 npm run format:check # prettier --check
 npm run format:write # prettier --write
 ```
 
-El build genera en `dist/`: `index.js` (CommonJS), `index.esm.js` (ESM), sourcemaps y la carpeta `language/`.
+The build generates in `dist/`: `index.js` (CommonJS), `index.esm.js` (ESM), sourcemaps and the `language/` folder.
 
-### Publicación
+### Publishing
 
 ```bash
-npm pack       # genera el .tgz para probar localmente
-npm version patch  # (o minor/major) antes de publicar una actualización
+npm pack       # generates the .tgz to test locally
+npm version patch  # (or minor/major) before publishing an update
 npm publish
 ```
 
 ---
 
-## Licencia
+## License
 
 MIT © Braulio Rodriguez
