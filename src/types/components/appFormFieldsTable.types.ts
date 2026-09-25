@@ -39,6 +39,7 @@ export interface FormBlock {
   maxlength?: number;
   pattern?: string;
   validate?: ValidationRules;
+  showPasswordToggle?: boolean;
   items?: FormBlockItem[];
 }
 

@@ -164,6 +164,7 @@ export default function AppFormFieldsFromConfig({
               pattern:
                 block.pattern || (block.validate && block.validate.pattern),
             },
+            showPasswordToggle: block.showPasswordToggle,
             items: block.items || [],
           },
           nouser || 'user',
