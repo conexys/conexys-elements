@@ -12,6 +12,10 @@ import { useTranslation } from 'react-i18next';
 import { Uservalidationerror } from '../../../components/index';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import type {
   InputTextProps,
   ApiError,
@@ -33,6 +37,11 @@ const InputText: React.FC<InputTextProps> = React.memo(
     const [t] = useTranslation('global');
     const [errors, setError] = useState<boolean>(false);
     const [texterror, setTextError] = useState<string>('');
+
+    // Toggle muestra/oculta contraseña (opcional vía block.showPasswordToggle)
+    const showToggle = block.showPasswordToggle === true;
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const handleTogglePassword = (): void => setShowPassword((v) => !v);
 
     const handleInputBlur = useCallback(
       async (event: React.FocusEvent<HTMLInputElement>): Promise<void> => {
@@ -170,7 +179,7 @@ const InputText: React.FC<InputTextProps> = React.memo(
         size="small"
         name={block.name}
         id={block.id}
-        type={block.type}
+        type={showToggle && showPassword ? 'text' : block.type}
         placeholder={block.placeholder}
         value={block.value || ''}
         onChange={block.onChange}
@@ -178,6 +187,24 @@ const InputText: React.FC<InputTextProps> = React.memo(
         autoComplete={block.autocomplete}
         className={errors ? `${block.className} is-invalid` : block.className}
         required={block.validate.required}
+        InputProps={
+          showToggle
+            ? {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={t('System.show_password')}
+                      onClick={handleTogglePassword}
+                      edge="end"
+                      tabIndex={-1}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }
+            : undefined
+        }
       />
     );
 

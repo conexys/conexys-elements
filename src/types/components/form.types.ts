@@ -37,6 +37,11 @@ export interface FormBlock {
   itemID?: string;
   /** Activa validación admin-scoped de disponibilidad (A-ENUM-2b). */
   adminCheck?: boolean;
+  /**
+   * Muestra un icono de ojo para alternar mostrar/ocultar la contraseña en
+   * campos de tipo password. Opcional (default: false).
+   */
+  showPasswordToggle?: boolean;
 }
 
 interface ButtonBlock {
@@ -82,6 +87,12 @@ interface FormLoginBlock {
   value?: string | boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   autocomplete?: string;
+  /**
+   * Muestra un icono de ojo a la derecha del campo para alternar entre
+   * ocultar/mostrar la contraseña. Útil en los tipos 'password' y
+   * 'passwordregister'. Opcional (default: false).
+   */
+  showPasswordToggle?: boolean;
 }
 
 export interface FormLoginProps {
@@ -148,6 +159,11 @@ interface InputPasswordBlock {
   value?: string | number;
   validate: PasswordValidation;
   ref?: string;
+  /**
+   * Muestra un icono de ojo a la derecha del campo para alternar entre
+   * ocultar/mostrar la contraseña. Opcional (default: false).
+   */
+  showPasswordToggle?: boolean;
 }
 
 export interface InputPasswordProps {
@@ -187,6 +203,12 @@ interface InputTextBlock {
   validate: TextValidation;
   ref?: string;
   style?: string;
+  /**
+   * Muestra un icono de ojo a la derecha del campo para alternar entre
+   * ocultar/mostrar la contraseña. Útil cuando `type` es 'password'.
+   * Opcional (default: false).
+   */
+  showPasswordToggle?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   /**
    * `cx_users_id` del registro en edición (A-ENUM-2b). Presente cuando el

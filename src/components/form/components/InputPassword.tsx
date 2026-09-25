@@ -6,11 +6,15 @@
  * @version 0.3.0
  */
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import type {
   InputPasswordProps,
   FormDataPassword,
@@ -37,6 +41,15 @@ const InputPassword: React.FC<InputPasswordProps> = ({
   inParagraph = false,
 }) => {
   const [t] = useTranslation('global');
+
+  // Toggle muestra/oculta contraseña (opcional vía block.showPasswordToggle)
+  const showToggle = block.showPasswordToggle === true;
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+
+  const handleTogglePassword = (): void => setShowPassword((v) => !v);
+  const handleToggleConfirmation = (): void =>
+    setShowConfirmation((v) => !v);
 
   // Validation
   const {
@@ -80,7 +93,7 @@ const InputPassword: React.FC<InputPasswordProps> = ({
                 {block.validate.required && <span className="required">*</span>}
               </span>
               <input
-                type="password"
+                type={showToggle && showPassword ? 'text' : 'password'}
                 //name={block.name}
                 id={block.id}
                 className={
@@ -95,6 +108,17 @@ const InputPassword: React.FC<InputPasswordProps> = ({
                 })}
                 required
               />
+              {showToggle && (
+                <button
+                  type="button"
+                  className="password-toggle-btn"
+                  onClick={handleTogglePassword}
+                  aria-label={t('System.show_password')}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </button>
+              )}
               {errors.password && (
                 <span className="error invalid-feedback">
                   {errors.password.type === 'required' &&
@@ -118,7 +142,7 @@ const InputPassword: React.FC<InputPasswordProps> = ({
                 size="small"
                 //name={block.name}
                 id={block.id}
-                type="password"
+                type={showToggle && showPassword ? 'text' : 'password'}
                 value={resetvalue}
                 className={
                   errors.password
@@ -131,6 +155,24 @@ const InputPassword: React.FC<InputPasswordProps> = ({
                   maxLength: block.validate.maxLength,
                 })}
                 required
+                InputProps={
+                  showToggle
+                    ? {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label={t('System.show_password')}
+                              onClick={handleTogglePassword}
+                              edge="end"
+                              tabIndex={-1}
+                            >
+                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }
+                    : undefined
+                }
               />
               {errors.password?.type === 'required' && (
                 <em className="error invalid-feedback">
@@ -162,7 +204,7 @@ const InputPassword: React.FC<InputPasswordProps> = ({
                 {block.validate.required && <span className="required">*</span>}
               </span>
               <input
-                type="password"
+                type={showToggle && showConfirmation ? 'text' : 'password'}
                 id={block.id + 100}
                 className={
                   errors.password_confirmation
@@ -182,6 +224,17 @@ const InputPassword: React.FC<InputPasswordProps> = ({
                 )}
                 required
               />
+              {showToggle && (
+                <button
+                  type="button"
+                  className="password-toggle-btn"
+                  onClick={handleToggleConfirmation}
+                  aria-label={t('System.show_password')}
+                  tabIndex={-1}
+                >
+                  {showConfirmation ? <VisibilityOff /> : <Visibility />}
+                </button>
+              )}
               {errors.password_confirmation && (
                 <span className="error invalid-feedback">
                   {errors.password_confirmation.type === 'required' &&
@@ -207,7 +260,7 @@ const InputPassword: React.FC<InputPasswordProps> = ({
                 size="small"
                 //name={block.name}
                 id={block.id + 100}
-                type="password"
+                type={showToggle && showConfirmation ? 'text' : 'password'}
                 value={resetvalue}
                 className={
                   errors.password_confirmation
@@ -226,6 +279,24 @@ const InputPassword: React.FC<InputPasswordProps> = ({
                   },
                 )}
                 required
+                InputProps={
+                  showToggle
+                    ? {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label={t('System.show_password')}
+                              onClick={handleToggleConfirmation}
+                              edge="end"
+                              tabIndex={-1}
+                            >
+                              {showConfirmation ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }
+                    : undefined
+                }
               />
               {errors.password_confirmation?.type === 'required' && (
                 <em className="error invalid-feedback">

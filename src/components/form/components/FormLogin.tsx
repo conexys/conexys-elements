@@ -13,6 +13,8 @@ import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LanguageSet, AppDialogModal } from '../../../components/index';
 import Button from '@mui/material/Button';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { AppDataSettingsHTML } from '../../index';
 import type {
   FormData,
@@ -31,6 +33,14 @@ const FormLogin: React.FC<FormLoginProps> = ({ block }) => {
   const [trigger1, setTrigger1] = useState<number>(0);
   const [trigger2, setTrigger2] = useState<number>(0);
   const [isChecked, setIsChecked] = useState<boolean>(false);
+
+  // Toggle muestra/oculta contraseña (opcional vía block.showPasswordToggle)
+  const showToggle = block.showPasswordToggle === true;
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+  const handleTogglePassword = (): void => setShowPassword((v) => !v);
+  const handleToggleConfirmation = (): void =>
+    setShowConfirmation((v) => !v);
 
   const handleChange = (): void => {
     setIsChecked((current) => !current);
@@ -84,7 +94,7 @@ const FormLogin: React.FC<FormLoginProps> = ({ block }) => {
         </div>
         <div className="input-group">
           <input
-            type={block.type}
+            type={showToggle && showPassword ? 'text' : block.type}
             value={(block.value as string) || ''}
             name={block.name as string}
             onChange={block.onChange}
@@ -94,6 +104,17 @@ const FormLogin: React.FC<FormLoginProps> = ({ block }) => {
           <span className="input-group-text">
             <i className="bx bx-lock text-4"></i>
           </span>
+          {showToggle && (
+            <button
+              type="button"
+              className="input-group-text password-toggle-btn"
+              onClick={handleTogglePassword}
+              aria-label={t('System.show_password')}
+              tabIndex={-1}
+            >
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </button>
+          )}
         </div>
         <NavLink to={forgot_passworddir} className="float-end">
           {t('login.recover_password')}
@@ -232,17 +253,30 @@ const FormLogin: React.FC<FormLoginProps> = ({ block }) => {
           <div className="col-sm-6 mb-3">
             <label>{labels[1]}</label>
             <span className="required">*</span>
-            <input
-              //name={names[1]}
-              id={ids[1]}
-              type="password"
-              className={
-                errors.password
-                  ? 'form-control form-control-lg is-invalid'
-                  : 'form-control form-control-lg'
-              }
-              {...register('password', { required: true, minLength: 5 })}
-            />
+            <div className="input-group">
+              <input
+                //name={names[1]}
+                id={ids[1]}
+                type={showToggle && showPassword ? 'text' : 'password'}
+                className={
+                  errors.password
+                    ? 'form-control form-control-lg is-invalid'
+                    : 'form-control form-control-lg'
+                }
+                {...register('password', { required: true, minLength: 5 })}
+              />
+              {showToggle && (
+                <button
+                  type="button"
+                  className="input-group-text password-toggle-btn"
+                  onClick={handleTogglePassword}
+                  aria-label={t('System.show_password')}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </button>
+              )}
+            </div>
             {errors.password?.type === 'required' && (
               <em className="error invalid-feedback">
                 {t('error.please_enter_password')}
@@ -257,23 +291,36 @@ const FormLogin: React.FC<FormLoginProps> = ({ block }) => {
           <div className="col-sm-6 mb-3">
             <label>{labels[2]}</label>
             <span className="required">*</span>
-            <input
-              //name={names[2]}
-              id={ids[2]}
-              type="password"
-              className={
-                errors.password_confirmation
-                  ? 'form-control form-control-lg is-invalid'
-                  : 'form-control form-control-lg'
-              }
-              {...register('password_confirmation', {
-                required: true,
-                minLength: 5,
-                validate: (value) =>
-                  value === password.current ||
-                  t('error.passwords_do_not_match'),
-              })}
-            />
+            <div className="input-group">
+              <input
+                //name={names[2]}
+                id={ids[2]}
+                type={showToggle && showConfirmation ? 'text' : 'password'}
+                className={
+                  errors.password_confirmation
+                    ? 'form-control form-control-lg is-invalid'
+                    : 'form-control form-control-lg'
+                }
+                {...register('password_confirmation', {
+                  required: true,
+                  minLength: 5,
+                  validate: (value) =>
+                    value === password.current ||
+                    t('error.passwords_do_not_match'),
+                })}
+              />
+              {showToggle && (
+                <button
+                  type="button"
+                  className="input-group-text password-toggle-btn"
+                  onClick={handleToggleConfirmation}
+                  aria-label={t('System.show_password')}
+                  tabIndex={-1}
+                >
+                  {showConfirmation ? <VisibilityOff /> : <Visibility />}
+                </button>
+              )}
+            </div>
             {errors.password_confirmation?.type === 'required' && (
               <em className="error invalid-feedback">
                 {t('error.repeat_password')}
