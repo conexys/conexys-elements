@@ -187,21 +187,23 @@ const InputText: React.FC<InputTextProps> = React.memo(
         autoComplete={block.autocomplete}
         className={errors ? `${block.className} is-invalid` : block.className}
         required={block.validate.required}
-        InputProps={
+        slotProps={
           showToggle
             ? {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label={t('System.show_password')}
-                      onClick={handleTogglePassword}
-                      edge="end"
-                      tabIndex={-1}
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={t('System.show_password')}
+                        onClick={handleTogglePassword}
+                        edge="end"
+                        tabIndex={-1}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }
             : undefined
         }
