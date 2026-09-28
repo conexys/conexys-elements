@@ -38,7 +38,7 @@ const InputText: React.FC<InputTextProps> = React.memo(
     const [errors, setError] = useState<boolean>(false);
     const [texterror, setTextError] = useState<string>('');
 
-    // Toggle muestra/oculta contraseña (opcional vía block.showPasswordToggle)
+    // Toggle password visibility (optional via block.showPasswordToggle).
     const showToggle = block.showPasswordToggle === true;
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const handleTogglePassword = (): void => setShowPassword((v) => !v);
@@ -60,7 +60,7 @@ const InputText: React.FC<InputTextProps> = React.memo(
         try {
           if (block.validate.check === 'email' && value) {
             if (block.adminCheck) {
-              // A-ENUM-2b: validación admin-scoped (disponibilidad real).
+              // A-ENUM-2b: admin-scoped validation (actual availability).
               const mailAdmin = await checkExistsMailAdmin(
                 { email: value, itemID: block.itemID },
                 configLogs,
@@ -81,7 +81,7 @@ const InputText: React.FC<InputTextProps> = React.memo(
             }
           } else if (block.validate.check === 'username' && value) {
             if (block.adminCheck) {
-              // A-ENUM-2b: validación admin-scoped (disponibilidad real).
+              // A-ENUM-2b: admin-scoped validation (actual availability).
               const usernameAdmin = await checkExistsUsernameAdmin(
                 { username: value, itemID: block.itemID },
                 configLogs,

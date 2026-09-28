@@ -40,7 +40,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ block }) => {
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setChecked(event.target.checked);
-      // Propagar cambio a formInputs para que el formulario padre pueda reaccionar
+      // Propagate the change to formInputs so the parent form can react.
       if (block.onChange) {
         const syntheticEvent = {
           target: {

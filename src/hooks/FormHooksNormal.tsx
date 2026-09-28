@@ -95,7 +95,7 @@ const useCustomForm = (
 
       logConsole(configLogs, 'info', '[Request] ', getProfile);
 
-      // NestJS devuelve el perfil plano (sin wrapper { data: [...] })
+      // NestJS returns the profile as a flat object (without a { data: [...] } wrapper).
       const profileData = Array.isArray(response.data)
         ? response.data[0]
         : response.data;
@@ -361,7 +361,7 @@ const useCustomForm = (
             logConsole(configLogs, 'info', '[Request] ', getServerURL);
           }
 
-          // NestJS devuelve plano; manejar ambos formatos
+          // NestJS returns a flat response; handle both formats.
           const responseData = response.data;
           const formData = Array.isArray(responseData)
             ? responseData[0]

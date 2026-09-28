@@ -220,7 +220,7 @@ const useCustomForm = (
 
         logConsole(configLogs, 'info', '[Request] ', getServerURL);
 
-        // NestJS devuelve plano; manejar ambos formatos
+        // NestJS returns a flat response; handle both formats.
         const responseData = response.data;
         const formData = Array.isArray(responseData)
           ? responseData[0]

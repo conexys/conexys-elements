@@ -67,7 +67,7 @@ export default function CardUser({
   const [t] = useTranslation('global');
   const editprofiledir: string = '/editprofile';
 
-  // Verificar si el perfil visitado es del usuario logueado
+  // Check whether the visited profile belongs to the logged-in user.
   const loggedUserData =
     typeof localStorage !== 'undefined'
       ? localStorage.getItem('datauser')

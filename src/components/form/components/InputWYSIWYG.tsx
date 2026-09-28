@@ -117,7 +117,7 @@ const InputWYSIWYG: React.FC<InputWYSIWYGProps> = React.memo(
     );
   },
   (prevProps, nextProps) => {
-    // Solo re-renderizar cuando cambie el valor o el nombre del campo
+    // Re-render only when the value or field name changes.
     return (
       prevProps.block.value === nextProps.block.value &&
       prevProps.block.name === nextProps.block.name &&

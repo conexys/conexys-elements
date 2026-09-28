@@ -7,10 +7,10 @@
  */
 
 /**
- * Resuelve la URL base de la API una sola vez y la deja inmutable.
- * `window.restAPI` se define de forma no escribible y no configurable para
- * evitar que un script de terceros (o la consola) la reescriba y redirija
- * el tráfico. Si ya existe se respeta su valor; si no, cae a '' (relativo).
+ * Resolves the API base URL once and makes it immutable.
+ * `window.restAPI` is defined as non-writable and non-configurable to
+ * to prevent a third-party script (or the console) from rewriting it and redirecting
+ * traffic. If it already exists, its value is preserved; otherwise, it falls back to '' (relative).
  */
 const REST_API_KEY = 'restAPI';
 
@@ -23,7 +23,7 @@ function resolveRestAPI(): string {
     } else {
       value = '';
     }
-    // Congelar: no reescribible ni reconfigurable.
+    // Freeze it: non-writable and non-configurable.
     try {
       Object.defineProperty(window, REST_API_KEY, {
         value,
@@ -32,7 +32,7 @@ function resolveRestAPI(): string {
         enumerable: true,
       });
     } catch {
-      // Si ya fue definida como no-configurable, no pasa nada.
+      // If it has already been defined as non-configurable, do nothing.
     }
   } else {
     value = '';

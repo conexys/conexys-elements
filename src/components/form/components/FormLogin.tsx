@@ -34,7 +34,7 @@ const FormLogin: React.FC<FormLoginProps> = ({ block }) => {
   const [trigger2, setTrigger2] = useState<number>(0);
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
-  // Toggle muestra/oculta contraseña (opcional vía block.showPasswordToggle)
+  // Toggle password visibility (optional via block.showPasswordToggle).
   const showToggle = block.showPasswordToggle === true;
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);

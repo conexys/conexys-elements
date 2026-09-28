@@ -12,7 +12,7 @@ export interface BaseServiceParams {
 }
 
 /**
- * Parámetros para servicio de eliminación
+ * Parameters for the delete service.
  */
 export interface DeleteServiceParams extends BaseServiceParams {
   deleteServerURL: string;

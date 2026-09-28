@@ -31,7 +31,7 @@ const postFormService = async (
   const valueToPush: ValueToPush = { fingerprint };
   let previousdata: string | boolean;
 
-  // Obtener los elementos del formulario de forma segura
+  // Safely retrieve the form elements.
   const formElement = (event?.currentTarget ||
     event?.target) as HTMLFormElement | null;
   if (formElement?.elements) {
@@ -40,7 +40,7 @@ const postFormService = async (
       if (element.name !== '') {
         let elementValue;
 
-        // Checkboxes: usar checked (boolean) en vez de value ("on"/undefined)
+        // Checkboxes: use checked (boolean) instead of value ("on"/undefined).
         if (element.type === 'checkbox') {
           elementValue = element.checked;
         } else {
@@ -77,13 +77,13 @@ const postFormService = async (
         'Content-Type': 'application/json',
       },
     };
-    // NestJS espera un objeto plano, no un array [restData, valueToPush]
-    // Merge: valueToPush + sessionID + iditem (para operaciones CRUD con itemID)
+    // NestJS expects a plain object, not an array [restData, valueToPush].
+    // Merge valueToPush with sessionID and iditem for CRUD operations using itemID.
     datasend = { ...dataload[1] };
     if (datauser.sessionID) {
       datasend.sessionID = datauser.sessionID;
     }
-    // iditem o id necesario para operaciones CRUD (editar usuario, cambiar password admin)
+    // iditem or id is required for CRUD operations (editing a user, changing an admin password).
     if (datauser.ButtonPressed) {
       datasend.ButtonPressed = datauser.ButtonPressed;
     }

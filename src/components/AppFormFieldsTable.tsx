@@ -267,7 +267,7 @@ export default function AppFormFieldsTable({
             } as ValidationRules,
             showPasswordToggle: block.showPasswordToggle,
             items: block.items || [],
-            // A-ENUM-2b: contexto admin para validación de disponibilidad real.
+            // A-ENUM-2b: admin context for real availability validation.
             itemID: id1,
             adminCheck: show === 'admin',
           },
@@ -311,7 +311,7 @@ export default function AppFormFieldsTable({
             } as ValidationRules,
             showPasswordToggle: block.showPasswordToggle,
             items: block.items || [],
-            // A-ENUM-2b: contexto admin para validación de disponibilidad real.
+            // A-ENUM-2b: admin context for real availability validation.
             itemID: id1,
             adminCheck: show === 'admin',
           },

@@ -63,11 +63,11 @@ const AppHeaderPage: React.FC<AppHeaderPageProps> = ({ fpHash, title }) => {
 
   const hasFetched = useRef<boolean>(false); // Prevent duplicate call
 
-  // Los tokens se leen de forma asíncrona tras inicializar authStorage (consulta
-  // `getsettings` para saber si el modo es cookie o localStorage). Leerlos de forma
-  // síncrona en el render provocaba un token vacío al recargar la página
-  // directamente, lo que disparaba `getfavorites` con sesión inválida (401) y
-  // podía cerrar la sesión.
+  // Tokens are read asynchronously after authStorage is initialized (it queries
+  // `getsettings` to determine whether the mode is cookie or localStorage). Reading
+  // them synchronously during render produced an empty token when directly reloading
+  // the page, triggering `getfavorites` with an invalid session (401) and potentially
+  // ending the session.
   const [token, setToken] = useState<string>('');
   const [sessionId, setSessionId] = useState<string>('');
   const [authReady, setAuthReady] = useState<boolean>(false);

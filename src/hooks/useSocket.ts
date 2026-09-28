@@ -1,8 +1,8 @@
 /**
  * @fileoverview
- * Hook para conectar el frontend al WebSocket de NestJS con socket.io.
- * Se conecta automáticamente cuando hay un token JWT disponible,
- * escucha eventos de notificaciones y se reconecta automáticamente.
+ * Hook for connecting the frontend to the NestJS WebSocket with socket.io.
+ * Connects automatically when a JWT token is available, listens for notification
+ * events, and reconnects automatically.
  * @module hooks/useSocket
  * @author Braulio Rodriguez <brauliorg@gmail.com>
  * @version 0.1.0
@@ -15,11 +15,11 @@ import { logConsole } from '../utilities/logConsole';
 import { useConexysConfig } from '../config/ConexysConfig';
 import { Url } from '../constants/global';
 
-// Extraer la base URL del WebSocket a partir de la URL de la API REST
-// Si la API está en "http://localhost:3001/restapi/", el WS va a "http://localhost:3001"
+// Extract the WebSocket base URL from the REST API URL.
+// If the API is at "http://localhost:3001/restapi/", the WS URL is "http://localhost:3001".
 const getWsBaseUrl = (): string => {
   const restApi = Url || 'http://localhost:3001/restapi/';
-  // Quitar '/restapi/' o '/restapi' del final
+  // Remove '/restapi/' or '/restapi' from the end.
   return restApi.replace(/\/restapi\/?$/, '');
 };
 
@@ -29,10 +29,10 @@ export interface SocketState {
 }
 
 /**
- * Hook que gestiona la conexión WebSocket con autenticación JWT.
- * Se conecta cuando hay token disponible y se desconecta al desmontar.
+ * Hook that manages the WebSocket connection with JWT authentication.
+ * Connects when a token is available and disconnects on unmount.
  *
- * @returns {object} - Estado de la conexión y el socket ref
+ * @returns {object} - Connection state and socket ref.
  */
 export const useSocket = (): {
   socketRef: React.MutableRefObject<Socket | null>;

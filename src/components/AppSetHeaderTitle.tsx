@@ -55,10 +55,10 @@ export default function AppSetHeaderTitle({
       try {
         data = JSON.parse(text);
       } catch {
-        // El backend puede devolver texto plano (ej: "Conexys")
+        // The backend may return plain text (e.g., "Conexys").
         data = text;
       }
-      // NestJS puede devolver { data: "valor" } o directamente "valor"
+      // NestJS may return { data: "value" } or "value" directly.
       const name =
         data && typeof data === 'object' && 'data' in data ? data.data : data;
       setSiteName(typeof name === 'string' ? name : String(name || ''));
@@ -73,7 +73,7 @@ export default function AppSetHeaderTitle({
     fetchData();
   }, [fetchData]);
 
-  // Mostrar título inmediatamente aunque el fetch no haya terminado
+  // Show the title immediately, even if the fetch has not finished.
   const fullTitle =
     siteName !== null && siteName !== '' ? `${title} - ${siteName}` : title;
 

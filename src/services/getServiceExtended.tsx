@@ -186,7 +186,7 @@ const getServiceData = async (
     logConsole(configLogs, 'info', '[Request] ', baseURL);
     logConsole(configLogs, 'data', '', response.data);
 
-    // NestJS devuelve plano sin wrapper { data: ... }
+    // NestJS returns a flat response without a { data: ... } wrapper.
     const responseData = response.data;
     if (
       responseData &&

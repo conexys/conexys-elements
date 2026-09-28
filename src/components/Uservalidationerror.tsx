@@ -11,7 +11,7 @@ import { Navigate } from 'react-router-dom';
 import { authStorage } from '../utilities/authStorage';
 import { useConexysConfig } from '../config/ConexysConfig';
 
-// Extraer el prefijo de administración de la URL actual
+// Extract the admin prefix from the current URL.
 const currentPath: string = window.location.pathname;
 const pathParts: string[] = currentPath.split('/').filter(Boolean);
 let adminPrefix: string = '';
@@ -21,7 +21,7 @@ if (
     (s) => pathParts[1] === s,
   )
 ) {
-  // La URL es tipo /admin/login → prefijo = /admin
+  // The URL is like /admin/login → prefix = /admin.
   adminPrefix = '/' + pathParts[0];
 }
 const logindir: string = adminPrefix + '/login';

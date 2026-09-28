@@ -33,13 +33,13 @@ export interface FormBlock {
     pattern?: string;
   };
   items?: any[];
-  /** `cx_users_id` del registro en edición (A-ENUM-2b, formulario admin). */
+  /** `cx_users_id` of the record being edited (A-ENUM-2b, admin form). */
   itemID?: string;
-  /** Activa validación admin-scoped de disponibilidad (A-ENUM-2b). */
+  /** Enables admin-scoped availability validation (A-ENUM-2b). */
   adminCheck?: boolean;
   /**
-   * Muestra un icono de ojo para alternar mostrar/ocultar la contraseña en
-   * campos de tipo password. Opcional (default: false).
+  * Displays an eye icon to toggle password visibility for password fields.
+  * Optional (default: false).
    */
   showPasswordToggle?: boolean;
 }
@@ -88,9 +88,8 @@ interface FormLoginBlock {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   autocomplete?: string;
   /**
-   * Muestra un icono de ojo a la derecha del campo para alternar entre
-   * ocultar/mostrar la contraseña. Útil en los tipos 'password' y
-   * 'passwordregister'. Opcional (default: false).
+  * Displays an eye icon to the right of the field to toggle password visibility.
+  * Useful for the 'password' and 'passwordregister' types. Optional (default: false).
    */
   showPasswordToggle?: boolean;
 }
@@ -160,8 +159,8 @@ interface InputPasswordBlock {
   validate: PasswordValidation;
   ref?: string;
   /**
-   * Muestra un icono de ojo a la derecha del campo para alternar entre
-   * ocultar/mostrar la contraseña. Opcional (default: false).
+  * Displays an eye icon to the right of the field to toggle password visibility.
+  * Optional (default: false).
    */
   showPasswordToggle?: boolean;
 }
@@ -204,20 +203,19 @@ interface InputTextBlock {
   ref?: string;
   style?: string;
   /**
-   * Muestra un icono de ojo a la derecha del campo para alternar entre
-   * ocultar/mostrar la contraseña. Útil cuando `type` es 'password'.
-   * Opcional (default: false).
+  * Displays an eye icon to the right of the field to toggle password visibility.
+  * Useful when `type` is 'password'. Optional (default: false).
    */
   showPasswordToggle?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   /**
-   * `cx_users_id` del registro en edición (A-ENUM-2b). Presente cuando el
-   * formulario es admin-scoped; permite el caso "es el propio registro".
+  * `cx_users_id` of the record being edited (A-ENUM-2b). Present when the
+  * form is admin-scoped; allows the current-record case.
    */
   itemID?: string;
   /**
-   * Indica que este input debe validar disponibilidad contra los endpoints
-   * admin-scoped (`admincheckusername`/`admincheckmail`) en lugar del público.
+  * Indicates that this input should check availability against the admin-scoped
+  * endpoints (`admincheckusername`/`admincheckmail`) instead of the public endpoints.
    */
   adminCheck?: boolean;
 }
@@ -344,9 +342,9 @@ export interface CheckUsernameRequest {
 }
 
 /**
- * Payload para el endpoint admin-scoped `admincheckusername` (A-ENUM-2b).
- * `itemID` es el `cx_users_id` del registro en edición (para el caso
- * "es el propio registro").
+ * Payload for the admin-scoped `admincheckusername` endpoint (A-ENUM-2b).
+ * `itemID` is the `cx_users_id` of the record being edited (for the
+ * current-record case).
  */
 export interface AdminCheckUsernameRequest {
   username: string;
@@ -354,7 +352,7 @@ export interface AdminCheckUsernameRequest {
 }
 
 /**
- * Payload para el endpoint admin-scoped `admincheckmail` (A-ENUM-2b).
+ * Payload for the admin-scoped `admincheckmail` endpoint (A-ENUM-2b).
  */
 export interface AdminCheckMailRequest {
   email: string;
@@ -362,9 +360,9 @@ export interface AdminCheckMailRequest {
 }
 
 /**
- * Respuesta de los endpoints admin de disponibilidad: devuelve el estado real
- * (a diferencia del endpoint público, que siempre responde 'Valid' neutro).
- * NUNCA revela quién ocupa el valor, solo el estado.
+ * Response from the admin availability endpoints: returns the actual status
+ * (unlike the public endpoint, which always returns a neutral 'Valid').
+ * NEVER reveals who owns the value, only its status.
  */
 export interface AdminAvailabilityResponse {
   available: boolean;

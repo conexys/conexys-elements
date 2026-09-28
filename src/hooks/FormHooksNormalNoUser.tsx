@@ -89,14 +89,14 @@ const useCustomForm = (
       }
     }
 
-    // Extraer el prefijo de administración de la URL actual
-    // Si estamos en /admin/signup, el prefijo es /admin
-    // Si estamos en /signup (sin prefijo), no hay prefijo
+    // Extract the admin prefix from the current URL.
+    // If the path is /admin/signup, the prefix is /admin.
+    // If the path is /signup (without a prefix), there is no prefix.
     const currentPath: string = window.location.pathname;
     const pathParts: string[] = currentPath.split('/').filter(Boolean);
     let adminPrefix: string = '';
     if (pathParts.length > 1 && pathParts[1] === 'signup') {
-      // La URL es tipo /admin/signup → prefijo = /admin
+      // The URL is like /admin/signup → prefix = /admin.
       adminPrefix = '/' + pathParts[0];
     }
     const logindir: string = adminPrefix + '/login';
@@ -166,7 +166,7 @@ const useCustomForm = (
         }
 
         if (message) {
-          // Limpiar el formulario antes de mostrar el mensaje de éxito
+          // Clear the form before displaying the success message.
           setFormInputs({});
           MySwal.fire({
             title: '<p>' + message + '</p>',

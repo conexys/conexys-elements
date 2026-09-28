@@ -246,7 +246,7 @@ const useCustomForm = (
           configLogs,
         );
         try {
-          // GET con itemID como query param (FingerprintGuard usa headers)
+          // GET with itemID as a query parameter (FingerprintGuard uses headers).
           const response = await axios.get(getServerURL, {
             withCredentials: true,
             headers: config.headers,
@@ -254,7 +254,7 @@ const useCustomForm = (
           });
           logConsole(configLogs, 'info', '[Request] ', getServerURL);
 
-          // NestJS devuelve plano; manejar ambos formatos
+          // NestJS returns a flat response; handle both formats.
           const responseData = response.data;
           const formData = Array.isArray(responseData)
             ? responseData[0]

@@ -42,7 +42,7 @@ const InputPassword: React.FC<InputPasswordProps> = ({
 }) => {
   const [t] = useTranslation('global');
 
-  // Toggle muestra/oculta contraseña (opcional vía block.showPasswordToggle)
+  // Toggle password visibility (optional via block.showPasswordToggle).
   const showToggle = block.showPasswordToggle === true;
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);

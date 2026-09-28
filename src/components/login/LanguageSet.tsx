@@ -27,7 +27,7 @@ const config: AxiosRequestConfig = {
   },
 };
 
-// Spinner CSS puro - sin dependencias externas
+// Pure CSS spinner with no external dependencies.
 const FadingBalls: React.FC<{ color?: string }> = ({ color = '#777' }) => {
   const ballStyle: React.CSSProperties = {
     width: '12px',

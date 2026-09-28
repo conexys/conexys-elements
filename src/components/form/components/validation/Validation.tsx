@@ -37,13 +37,13 @@ const postURLusername: string = Url + 'checkusername';
 const postURLmail: string = Url + 'checkmail';
 
 /**
- * URL admin-scoped para verificar disponibilidad de username (A-ENUM-2b).
+ * Admin-scoped URL for checking username availability (A-ENUM-2b).
  * @type {string}
  */
 const postURLAdminUsername: string = Url + 'admincheckusername';
 
 /**
- * URL admin-scoped para verificar disponibilidad de email (A-ENUM-2b).
+ * Admin-scoped URL for checking email availability (A-ENUM-2b).
  * @type {string}
  */
 const postURLAdminMail: string = Url + 'admincheckmail';
@@ -138,13 +138,13 @@ export { checkExistsUsername, checkExistsMail };
 /**
  * Asynchronously checks the availability of a username for the admin panel.
  *
- * A-ENUM-2b: golpea al endpoint admin-scoped `admincheckusername` (protegido por
- * `admin.all_read`). A diferencia del público `checkExistsUsername` (que devuelve
- * un booleano difuso basado en 'Valid'), devuelve el estado real de disponibilidad.
+ * A-ENUM-2b: calls the admin-scoped `admincheckusername` endpoint (protected by
+ * `admin.all_read`). Unlike the public `checkExistsUsername` endpoint (which returns
+ * an ambiguous boolean based on 'Valid'), it returns the actual availability status.
  *
  * @async
  * @function
- * @param {AdminCheckUsernameRequest} params - username a verificar + `itemID` (cx_users_id en edición).
+ * @param {AdminCheckUsernameRequest} params - Username to check + `itemID` (`cx_users_id` when editing).
  * @returns {Promise<AdminAvailabilityResponse>} `{ available, isCurrent }`.
  */
 const checkExistsUsernameAdmin = async (
@@ -172,8 +172,8 @@ const checkExistsUsernameAdmin = async (
   } catch (err: unknown) {
     logConsole(configLogs, 'error', '', err);
     console.error(err);
-    // Ante error de red/permiso, devolvemos estado conservador (no disponible)
-    // para que el formulario no permita guardar un valor dudoso.
+    // On a network or permission error, return a conservative status (unavailable)
+    // so the form cannot save a value whose availability is uncertain.
     return { available: false, isCurrent: false };
   }
 };
@@ -181,12 +181,12 @@ const checkExistsUsernameAdmin = async (
 /**
  * Asynchronously checks the availability of an email for the admin panel.
  *
- * A-ENUM-2b: golpea al endpoint admin-scoped `admincheckmail`. Misma semántica
- * que {@link checkExistsUsernameAdmin}.
+ * A-ENUM-2b: calls the admin-scoped `admincheckmail` endpoint. Same semantics
+ * as {@link checkExistsUsernameAdmin}.
  *
  * @async
  * @function
- * @param {AdminCheckMailRequest} params - email a verificar + `itemID`.
+ * @param {AdminCheckMailRequest} params - Email to check + `itemID`.
  * @returns {Promise<AdminAvailabilityResponse>} `{ available, isCurrent }`.
  */
 const checkExistsMailAdmin = async (

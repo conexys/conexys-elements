@@ -32,7 +32,7 @@ const patchFormService = async (
   const valueToPush: ValueToPush = { fingerprint };
   let previousdata: string | boolean;
 
-  // Obtener los elementos del formulario de forma segura
+  // Safely retrieve the form elements.
   const formElement = (event?.currentTarget ||
     event?.target) as HTMLFormElement | null;
   if (formElement?.elements) {
@@ -41,7 +41,7 @@ const patchFormService = async (
       if (element.name !== '') {
         let elementValue;
 
-        // Checkboxes: usar checked (boolean) en vez de value ("on"/undefined)
+        // Checkboxes: use checked (boolean) instead of value ("on"/undefined).
         if (element.type === 'checkbox') {
           elementValue = element.checked;
         } else {
@@ -78,7 +78,7 @@ const patchFormService = async (
         'Content-Type': 'application/json',
       },
     };
-    // NestJS espera un objeto plano, no un array [restData, valueToPush]
+    // NestJS expects a plain object, not an array [restData, valueToPush].
     datasend = { ...dataload[1] };
     if (datauser.sessionID) {
       datasend.sessionID = datauser.sessionID;
