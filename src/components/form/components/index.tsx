@@ -11,6 +11,7 @@ import Heading from './Heading';
 import Image from './Image';
 import Info from './Info';
 import InputFile from './InputFile';
+import InputDate from './InputDate';
 import InputPassword from './InputPassword';
 import InputText from './InputText';
 import InputWYSIWYG from './InputWYSIWYG';
@@ -27,6 +28,7 @@ export {
   Image,
   Info,
   InputFile,
+  InputDate,
   InputPassword,
   InputText,
   InputWYSIWYG,

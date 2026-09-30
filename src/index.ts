@@ -64,6 +64,7 @@ export {
   Image,
   Info,
   InputFile,
+  InputDate,
   InputPassword,
   InputText,
   InputWYSIWYG,

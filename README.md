@@ -43,8 +43,10 @@ These dependencies must be installed in your consumer project (they are not bund
 @fingerprintjs/fingerprintjs  ^5.2.0
 @mui/icons-material           ^9.1.1
 @mui/material                 ^9.1.2
+@mui/x-date-pickers           ^9.14.0
 axios                         ^1.18.1
 date-fns                      ^4.4.0
+dayjs                         ^1.11.13
 jodit-react                   ^5.3.21
 prop-types                    ^15.8.1
 react                         ^19.2.7
@@ -63,7 +65,7 @@ sweetalert2-react-content     ^5.1.2
 Install them all at once:
 
 ```bash
-npm install react react-dom @mui/material @mui/icons-material axios react-i18next react-helmet-async react-router-dom sweetalert2 sweetalert2-react-content date-fns jodit-react react-select react-hook-form react-transition-group @fingerprintjs/fingerprintjs socket.io-client prop-types
+npm install react react-dom @mui/material @mui/icons-material @mui/x-date-pickers axios react-i18next react-helmet-async react-router-dom sweetalert2 sweetalert2-react-content date-fns dayjs jodit-react react-select react-hook-form react-transition-group @fingerprintjs/fingerprintjs socket.io-client prop-types
 ```
 
 > ⚙️ **Internal dependencies** (resolved automatically): `dompurify`, `material-react-table`, `react-bootstrap`, `react-icons`.
@@ -276,7 +278,7 @@ function MyComponent() {
 
 The core engine is `RenderForm`, which receives a list of `FormInputs` and renders the appropriate controls. The atomic components available:
 
-`Button` · `Checkbox` · `Heading` · `Image` · `Info` · `InputFile` · `InputPassword` · `InputText` · `InputWYSIWYG` · `Radiobutton` · `Select` · `Switch` · `Text`
+`Button` · `Checkbox` · `Heading` · `Image` · `Info` · `InputDate` · `InputFile` · `InputPassword` · `InputText` · `InputWYSIWYG` · `Radiobutton` · `Select` · `Switch` · `Text`
 
 Rendering + validation:
 

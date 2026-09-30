@@ -143,6 +143,25 @@ export interface InputFileProps {
   block: InputFileBlock;
 }
 
+interface InputDateBlock {
+  id: string;
+  name: string;
+  label: string;
+  ref?: string;
+  placeholder?: string;
+  value?: any;
+  onChange?: (event: any) => void;
+  error?: boolean;
+  helperText?: string;
+  validate?: {
+    required?: boolean;
+  };
+}
+
+export interface InputDateProps {
+  block: InputDateBlock;
+}
+
 interface PasswordValidation {
   required?: boolean;
   minLength?: number;
