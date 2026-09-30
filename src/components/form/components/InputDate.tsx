@@ -16,7 +16,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import InputLabel from '@mui/material/InputLabel';
-import type { Dayjs } from 'dayjs';
+import dayjs, { type Dayjs } from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import type {
   ApiError,
@@ -26,6 +26,38 @@ import { useConexysConfig } from '../../../config/ConexysConfig';
 import { Uservalidationerror } from '../../../components/index';
 
 type NullableDayjs = Dayjs | null;
+
+/**
+ * Normalizes the raw `block.value` into a valid `Dayjs` instance (or `null`).
+ *
+ * Accepts:
+ *  - a `Dayjs` instance,
+ *  - a string in ISO format (`YYYY-MM-DD` or ISO-8601),
+ *  - a string in the display format (`DD/MM/YYYY`).
+ *
+ * Anything else (empty string, invalid date, `0`, `false`, ...) yields `null`
+ * so the DatePicker never receives a non-dayjs value (which would throw
+ * `TypeError: e.isValid is not a function`).
+ */
+const toDayjsValue = (raw: unknown): NullableDayjs => {
+  if (raw == null || raw === '') return null;
+
+  // Already a Dayjs instance (supports the `.isValid()` check).
+  if (dayjs.isDayjs(raw)) return raw as Dayjs;
+
+  // A string: try ISO first (dayjs parses natively), then the display format.
+  if (typeof raw === 'string') {
+    const parsed = dayjs(raw.trim());
+    if (parsed.isValid()) return parsed;
+
+    const fromDisplay = dayjs(raw.trim(), 'DD/MM/YYYY');
+    if (fromDisplay.isValid()) return fromDisplay;
+
+    return null;
+  }
+
+  return null;
+};
 
 /**
  * InputDate component for rendering a calendar-based date picker.
@@ -40,9 +72,7 @@ const InputDate: React.FC<InputDateProps> = React.memo(
     const configLogs = useConexysConfig();
     const [t] = useTranslation('global');
 
-    const currentValue: NullableDayjs = block.value
-      ? (block.value as unknown as Dayjs)
-      : null;
+    const currentValue: NullableDayjs = toDayjsValue(block.value);
 
     const handleChange = (newValue: NullableDayjs): void => {
       if (!block.onChange) return;

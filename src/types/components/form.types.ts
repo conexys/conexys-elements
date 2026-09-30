@@ -149,6 +149,7 @@ interface InputDateBlock {
   label: string;
   ref?: string;
   placeholder?: string;
+  /** A Dayjs instance, an ISO/display date string, or null/undefined. */
   value?: any;
   onChange?: (event: any) => void;
   error?: boolean;
