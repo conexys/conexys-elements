@@ -166,6 +166,7 @@ export default function AppFormFieldsFromConfig({
             },
             showPasswordToggle: block.showPasswordToggle,
             items: block.items || [],
+            accept: block.accept,
           },
           nouser || 'user',
         ),
