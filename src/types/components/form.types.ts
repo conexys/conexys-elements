@@ -137,6 +137,7 @@ interface InputFileBlock {
   name: string;
   ref?: string;
   accept?: string;
+  onChange?: (file: File | null) => void;
 }
 
 export interface InputFileProps {

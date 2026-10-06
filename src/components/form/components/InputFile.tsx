@@ -102,6 +102,9 @@ const InputFile: React.FC<InputFileProps> = ({ block }) => {
       if (source === 'drop') {
         updateInputFile(file);
       }
+
+      // Notify the parent form of the selected file
+      block.onChange?.(file);
     }
   };
 
@@ -170,6 +173,9 @@ const InputFile: React.FC<InputFileProps> = ({ block }) => {
     if (input) {
       input.value = '';
     }
+
+    // Notify the parent form that the file has been deselected
+    block.onChange?.(null);
   };
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>): void => {
