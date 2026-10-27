@@ -275,9 +275,9 @@ const Select: React.FC<SelectProps> = ({ block }) => {
             {block.items.map((option) => (
               <MenuItem key={option.item} value={option.item}>
                 {option.isCreateOption ? (
-                  <em style={{ color: '#1976d2' }}>+ {t(option.textitem)}</em>
+                  <em style={{ color: '#1976d2' }}>+ {option.textitem}</em>
                 ) : (
-                  t(option.textitem)
+                  option.textitem
                 )}
               </MenuItem>
             ))}
@@ -308,7 +308,7 @@ const Select: React.FC<SelectProps> = ({ block }) => {
           >
             {block.items.map((option) => (
               <MenuItem key={option.item} value={option.item}>
-                {t(option.textitem)}
+                {option.textitem}
               </MenuItem>
             ))}
           </Selectmui>
