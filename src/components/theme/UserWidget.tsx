@@ -40,6 +40,7 @@ export default function UserWidget({
   username,
   useravatar,
   fpHash,
+  onNotFound,
 }: UserWidgetProps): React.JSX.Element {
   const configLogs = useConexysConfig();
   const [t] = useTranslation('global');
@@ -141,7 +142,10 @@ export default function UserWidget({
           );
           setIsError(true);
           setMessageerror(t('login.no_server_response'));
-        } else if (err.response?.status === 400) {
+        } else if (
+          err.response?.status === 400 ||
+          err.response?.status === 404
+        ) {
           logConsole(
             configLogs,
             'error',
@@ -150,6 +154,9 @@ export default function UserWidget({
           );
           setIsError(true);
           setMessageerror(t('login.command_not_found'));
+          // The requested username does not exist: let the host decide how to
+          // render the not-found state (e.g. navigate to its own 404 page).
+          onNotFound?.();
         } else if (err.response?.status === 401) {
           logConsole(
             configLogs,
@@ -183,6 +190,7 @@ export default function UserWidget({
     t,
     username,
     useravatar,
+    onNotFound,
     configLogs,
   ]);
 

@@ -95,6 +95,12 @@ export interface UserWidgetProps {
   username: string;
   useravatar: string;
   fpHash: string;
+  /**
+   * Invoked when the requested username does not exist (HTTP 400/404).
+   * Lets the host application render/navigate to its 404 page instead of
+   * leaving an empty content area.
+   */
+  onNotFound?: () => void;
 }
 
 export interface UserDataTheme {
