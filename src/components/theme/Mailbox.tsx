@@ -15,7 +15,6 @@ export default function Mailbox({
   msgTarget,
   msgDate,
   theObj,
-  t,
 }: MailboxProps): React.JSX.Element {
   const safeObj: { __html: string } = { __html: sanitizeHtml(theObj.__html) };
   return (

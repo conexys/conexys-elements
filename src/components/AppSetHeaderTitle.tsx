@@ -10,15 +10,8 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import type { AppSetHeaderTitleProps } from '../types/components/components.types';
-import type { ContentTypeConfig } from '../types/common';
 import { useConexysConfig } from '../config/ConexysConfig';
 import { logConsole } from '../utilities/logConsole';
-
-const config: ContentTypeConfig = {
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
 
 /**
  * Functional component to dynamically set the page title based on settings.
@@ -29,7 +22,6 @@ export default function AppSetHeaderTitle({
   keys,
   title,
   baseUrl,
-  serviceData,
 }: AppSetHeaderTitleProps): React.JSX.Element {
   const configLogs = useConexysConfig();
   const baseURL: string = baseUrl + 'getsettings';

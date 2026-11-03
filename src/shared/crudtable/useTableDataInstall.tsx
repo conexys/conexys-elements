@@ -14,8 +14,8 @@ export const useTableDataInstall = (
   getServerURL: string,
   postServerURL: string,
   deleteServerURL: string,
-  restoreServerURL: string,
-  t: any,
+  _restoreServerURL: string,
+  _t: any,
 ): UseTableDataInstallReturn => {
   //const [formStatus, setFormStatus] = useState(false);
   const [triggerShow1, setTriggerShow1] = useState(0);
@@ -68,7 +68,7 @@ export const useTableDataInstall = (
 
   // Alert
   const handleClose = (
-    event?: React.SyntheticEvent | Event,
+    _event?: React.SyntheticEvent | Event,
     reason?: string,
   ): void => {
     if (reason === 'clickaway') {

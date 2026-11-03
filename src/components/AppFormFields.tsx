@@ -82,7 +82,7 @@ export default function AppFormFields({
   const postURL1: string = Url + postURL;
 
   const [post, setPost] = useState<PostResponse | null>(null);
-  const [error, setError] = useState<boolean>(false);
+  const [, setError] = useState<boolean>(false);
 
   const fetchData = useCallback(async (): Promise<void> => {
     // Always fetch form config from backend, even without id (for new records).

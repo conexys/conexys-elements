@@ -184,7 +184,7 @@ export default function CardUser({
     },
   );
   const handleClose = (
-    event?: React.SyntheticEvent | Event,
+    _event?: React.SyntheticEvent | Event,
     reason?: string,
   ): void => {
     if (reason === 'clickaway') {

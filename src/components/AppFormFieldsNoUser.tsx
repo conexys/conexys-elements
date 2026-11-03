@@ -69,7 +69,7 @@ export default function AppFormFieldsNoUser({
 
   const baseURL: string = Url + postURL;
   const [post, setPost] = useState<string | null>(null);
-  const [error, setError] = useState<boolean>(false);
+  const [, setError] = useState<boolean>(false);
   const hasFetched = useRef<boolean>(false); // Prevent duplicate call
 
   const fetchData = useCallback(async (): Promise<void> => {

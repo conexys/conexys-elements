@@ -31,7 +31,7 @@ const logindir: string = adminPrefix + '/login';
  * @returns {JSX.Element} React element to trigger navigation.
  */
 const Uservalidationerror = (
-  configLogs: ReturnType<typeof useConexysConfig>,
+  configLogs?: ReturnType<typeof useConexysConfig> | null,
 ): React.JSX.Element => {
   localStorage.removeItem('datauser');
   localStorage.removeItem('sidebarleft');

@@ -7,6 +7,7 @@ export interface FormBlock {
   name: string;
   permission: number;
   permissionstatus: number;
+  accept?: string;
   type?: string;
   label?: string;
   id?: string;
@@ -65,6 +66,7 @@ interface CheckboxBlock {
   label: string;
   ref?: string;
   value?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface CheckboxProps {
@@ -290,6 +292,8 @@ export interface SelectOption {
 interface SelectItem {
   item: string;
   textitem: string;
+  value?: string;
+  label?: string;
   isCreateOption?: boolean;
 }
 

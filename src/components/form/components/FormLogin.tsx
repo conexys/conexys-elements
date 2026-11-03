@@ -222,7 +222,6 @@ const FormLogin: React.FC<FormLoginProps> = ({ block }) => {
   }
 
   if (block.type === 'passwordregister') {
-    const names = block.name as string[];
     const ids = block.id as string[];
     const labels = block.label as string[];
 

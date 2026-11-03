@@ -10,7 +10,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
 import axios from 'axios';
-import type { AxiosResponse, AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import SweetAlert2 from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import patchFormService from '../services/patchFormService';

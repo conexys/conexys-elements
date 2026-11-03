@@ -16,7 +16,7 @@ export const useTableData = (
   postServerURL: string,
   deleteServerURL: string,
   restoreServerURL: string,
-  t: any,
+  _t: any,
   method: 'post' | 'patch' = 'post',
   restoreMethod: 'post' | 'patch' = 'post',
   fetchMethod: 'post' | 'get' = 'post',
@@ -92,7 +92,7 @@ export const useTableData = (
 
   // Alert
   const handleClose = (
-    event?: React.SyntheticEvent | Event,
+    _event?: React.SyntheticEvent | Event,
     reason?: string,
   ): void => {
     if (reason === 'clickaway') {

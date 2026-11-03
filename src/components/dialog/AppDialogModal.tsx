@@ -150,7 +150,6 @@ const AppDialogModal: React.FC<AppDialogModalProps> = ({
       <BootstrapDialog
         aria-labelledby="customized-dialog-title"
         open={open}
-        disableEscapeKeyDown
         size={getsize}
       >
         <BootstrapDialogTitle

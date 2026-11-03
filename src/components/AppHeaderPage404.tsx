@@ -24,10 +24,7 @@ import { useConexysConfig } from '../config/ConexysConfig';
 /**
  * React functional component representing the header of a 404 error page.
  */
-const AppHeaderPage404: React.FC<AppHeaderPage404Props> = ({
-  title,
-  fpHash,
-}) => {
+const AppHeaderPage404: React.FC<AppHeaderPage404Props> = ({ title }) => {
   const [menuRigth, setOpenMenuRigth] = useState<boolean>(false);
   const { developmentMode } = useConexysConfig();
 

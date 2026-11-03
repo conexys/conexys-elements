@@ -34,7 +34,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ block }) => {
   const [checked, setChecked] = useState<boolean>(false);
 
   useEffect(() => {
-    setChecked(value === true || value === 'true');
+    setChecked(String(value) === 'true');
   }, [value]);
 
   const handleChange = useCallback(

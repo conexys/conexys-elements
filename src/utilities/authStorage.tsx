@@ -29,7 +29,6 @@ const TYPE_SESSION_CACHE_KEY = 'cx_type_session';
 // plumbing non-null without ever exposing the secret to JavaScript.
 const COOKIE_AUTH_MARKER = 'cookie';
 
-let USE_COOKIES_FOR_AUTH = false; // Default value
 let SESSION_EXPIRATION = 365; // Default value
 
 // --- Module-singleton state -----------------------------------------------
@@ -65,7 +64,6 @@ const getCachedTypeSession = (): string | null => {
 
 /**
  * Resets the in-flight initialization state after logout. Keeps
- * `USE_COOKIES_FOR_AUTH` (still valid — `type_session` did not change) and the
  * `cx_type_session` persistent cache intact, so no bundle re-issues a redundant
  * `getsettings` request purely because a logout happened.
  */
@@ -73,8 +71,8 @@ const resetAuthConfig = (): void => {
   initPromise = null;
   isConfigInitialized = false;
   isFetching = false;
-  // USE_COOKIES_FOR_AUTH intentionally NOT reset; resolveUseCookies() falls back
-  // to the persistent `cx_type_session` cache until initialize() runs again.
+  // The persistent `cx_type_session` cache is intentionally kept until
+  // initialize() runs again.
 };
 
 /**
@@ -87,22 +85,6 @@ const setCachedTypeSession = (value: string): void => {
   } catch {
     // Ignore storage failures (e.g. private mode) — the in-memory flag still works.
   }
-};
-
-/**
- * Returns whether auth should use cookies, resolving the flag synchronously.
- * NEVER triggers a fetch. Precedence:
- *   1. in-memory initialized flag (authoritative)
- *   2. cross-bundle persistent cache (`cx_type_session`)
- *   3. default 'localstorage' (install default)
- */
-const resolveUseCookies = (): boolean => {
-  // VIII-C4: auth is ALWAYS via HttpOnly cookie. The `type_session`
-  // localstorage medium is deprecated and removed: the JWT is never written to
-  // (nor read from) localStorage. This also retires the cross-bundle
-  // `cx_type_session` cache and the `getsettings` init cascade, since the
-  // medium is now a compile-time constant.
-  return true;
 };
 
 /**
@@ -123,7 +105,6 @@ const fetchTypeSession = async (
       (value: string) => {
         const resolved =
           value && typeof value === 'string' ? value : 'localstorage';
-        USE_COOKIES_FOR_AUTH = resolved === 'cookie';
         setCachedTypeSession(resolved);
       },
       configLogs,
@@ -161,7 +142,6 @@ const initializeAuthConfig = (
     // Fast path: reuse a previously resolved value from the cross-bundle cache.
     const cached = getCachedTypeSession();
     if (cached !== null) {
-      USE_COOKIES_FOR_AUTH = cached === 'cookie';
       isConfigInitialized = true;
       return;
     }
@@ -319,7 +299,7 @@ export const authStorage = {
   },
 
   async removeAuthData(
-    configLogs: ReturnType<typeof useConexysConfig>,
+    _configLogs?: ReturnType<typeof useConexysConfig> | null,
   ): Promise<void> {
     this.deleteCookie('cxauthxc');
     this.deleteCookie('cx_session');

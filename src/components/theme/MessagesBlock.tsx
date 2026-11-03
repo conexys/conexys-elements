@@ -54,7 +54,7 @@ export default function MessagesBlock({
   const configLogs = useConexysConfig();
   const [t] = useTranslation('global');
 
-  const StyledBadge = styled(Badge)(({ theme }) => ({
+  const StyledBadge = styled(Badge)(() => ({
     '& .MuiBadge-badge': {
       right: -13,
       top: 0,
@@ -116,7 +116,7 @@ export default function MessagesBlock({
     },
   );
   const handleClose = useCallback(
-    (event?: React.SyntheticEvent | Event, reason?: string): void => {
+    (_event?: React.SyntheticEvent | Event, reason?: string): void => {
       if (reason === 'clickaway') {
         return;
       }
@@ -275,9 +275,9 @@ export default function MessagesBlock({
               className="speed-action"
               key={action.name}
               icon={action.icon}
-              tooltipTitle={action.name}
-              tooltipOpen
-              tooltipPlacement="left"
+              title={action.name}
+              open
+              placement="left"
               onClick={handleCloseMenu}
             />
           ))}

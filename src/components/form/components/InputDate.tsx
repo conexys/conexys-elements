@@ -17,7 +17,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import InputLabel from '@mui/material/InputLabel';
 import dayjs, { type Dayjs } from 'dayjs';
-import { useTranslation } from 'react-i18next';
 import type {
   ApiError,
   InputDateProps,
@@ -70,7 +69,6 @@ const toDayjsValue = (raw: unknown): NullableDayjs => {
 const InputDate: React.FC<InputDateProps> = React.memo(
   ({ block }) => {
     const configLogs = useConexysConfig();
-    const [t] = useTranslation('global');
 
     const currentValue: NullableDayjs = toDayjsValue(block.value);
 

@@ -141,7 +141,7 @@ const Rendertimeline: React.FC<FpHashProps> = ({ fpHash }) => {
     },
   );
   const handleClose = (
-    event?: React.SyntheticEvent | Event,
+    _event?: React.SyntheticEvent | Event,
     reason?: string,
   ): void => {
     if (reason === 'clickaway') {

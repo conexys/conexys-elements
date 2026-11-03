@@ -41,8 +41,8 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
       {!noHr && <hr />}
       <Stack
         direction="row-reverse"
-        alignItems="center"
         spacing={1}
+        sx={{ alignItems: 'center' }}
         {...stackProps}
       >
         <Button variant="contained" color={cancelColor} onClick={onCancel}>

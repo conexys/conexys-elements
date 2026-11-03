@@ -8,7 +8,6 @@
 
 import patchService from './patchService';
 import { Uservalidationerror } from '../components/index';
-import axios from 'axios';
 import type { AxiosError } from 'axios';
 import { getOrSetFingerprint } from '../shared/baseFingerprintService';
 import { logConsole } from '../utilities/logConsole';

@@ -10,7 +10,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
 import axios from 'axios';
-import type { AxiosResponse, AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import SweetAlert2 from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useTranslation } from 'react-i18next';
@@ -22,10 +22,7 @@ import { getOrSetFingerprint } from '../shared/baseFingerprintService';
 import { Url } from '../constants/global';
 import { authStorage } from '../utilities/authStorage';
 import { logConsole } from '../utilities/logConsole';
-import type {
-  ProfileResponse,
-  UseCustomFormReturn,
-} from '../types/hooks/formHooksNormal.types';
+import type { UseCustomFormReturn } from '../types/hooks/formHooksNormal.types';
 import type {
   FormInputs,
   DeleteEvent,

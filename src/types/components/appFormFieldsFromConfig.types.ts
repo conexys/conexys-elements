@@ -28,6 +28,7 @@ export interface FormBlockComponents {
   maxlength?: number;
   pattern?: string;
   showPasswordToggle?: boolean;
+  accept?: string;
   items?: any[];
   onCreateNew?: () => void;
   allowCreate?: boolean;

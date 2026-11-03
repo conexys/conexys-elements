@@ -9,7 +9,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
 import axios from 'axios';
-import type { AxiosResponse, AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import SweetAlert2 from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useTranslation } from 'react-i18next';
@@ -105,7 +105,7 @@ const useCustomForm = (
         title: '<p>' + t('Plugin.completeinstallation') + '</p>',
         icon: 'success',
         confirmButtonText: t('general.ok'),
-      }).then((result) => {
+      }).then(() => {
         if (dataform.data === 'plugins_instal_successfully') {
           window.location.reload();
         }
@@ -146,7 +146,7 @@ const useCustomForm = (
           title: '<p>Desinstalacion completa</p>',
           icon: 'success',
           confirmButtonText: t('general.ok'),
-        }).then((result) => {
+        }).then(() => {
           window.location.reload();
         });
       }
@@ -241,10 +241,7 @@ const useCustomForm = (
     const setFp = async (): Promise<void> => {
       setCheckdata(false);
       if (id !== '') {
-        const visitorIdHash: string = await getOrSetFingerprint(
-          fpHash,
-          configLogs,
-        );
+        await getOrSetFingerprint(fpHash, configLogs);
         try {
           // GET with itemID as a query parameter (FingerprintGuard uses headers).
           const response = await axios.get(getServerURL, {

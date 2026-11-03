@@ -59,7 +59,7 @@ const AppHeaderPage: React.FC<AppHeaderPageProps> = ({ fpHash, title }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [color, setColor] = useState<string>('');
-  const [getfavorites, setFavoritesList] = useState<boolean | string>('');
+  const [, setFavoritesList] = useState<boolean | string>('');
 
   const hasFetched = useRef<boolean>(false); // Prevent duplicate call
 
@@ -187,7 +187,7 @@ const AppHeaderPage: React.FC<AppHeaderPageProps> = ({ fpHash, title }) => {
   );
 
   const handleClose = useCallback(
-    (event?: React.SyntheticEvent | Event, reason?: string): void => {
+    (_event?: React.SyntheticEvent | Event, reason?: string): void => {
       if (reason === 'clickaway') {
         return;
       }

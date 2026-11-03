@@ -6,7 +6,6 @@
  * @version 0.3.0
  */
 
-import React from 'react';
 import { useState } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
 import SweetAlert2 from 'sweetalert2';
@@ -151,7 +150,7 @@ const useCustomForm = (
                 }
               },
               allowOutsideClick: () => !MySwal.isLoading(),
-            }).then((result) => {
+            }).then(() => {
               if (authorized === true) {
                 logConsole(configLogs, 'data', '', 'Authorised');
                 setAuthTokens(dataform as AuthTokenData);
@@ -172,7 +171,7 @@ const useCustomForm = (
             title: '<p>' + message + '</p>',
             icon: 'success',
             confirmButtonText: t('general.ok'),
-          }).then((result) => {
+          }).then(() => {
             window.location.href = logindir;
           });
         }

@@ -90,7 +90,7 @@ export default function MailTemplateWidget({
     },
   );
   const handleClose = useCallback(
-    (event?: React.SyntheticEvent | Event, reason?: string): void => {
+    (_event?: React.SyntheticEvent | Event, reason?: string): void => {
       if (reason === 'clickaway') {
         return;
       }

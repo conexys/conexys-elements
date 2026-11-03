@@ -56,7 +56,7 @@ const Switch: React.FC<SwitchProps> = ({ block }) => {
               checked={checked}
               onChange={handleChange}
               value={checked}
-              slotProps={{ htmlInput: { 'aria-label': 'controlled' } }}
+              slotProps={{ input: { 'aria-label': 'controlled' } }}
             />
           }
           label={block.label}

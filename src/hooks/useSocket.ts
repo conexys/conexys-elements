@@ -51,7 +51,7 @@ export const useSocket = (): {
     if (!token) {
       logConsole(
         configLogs,
-        'warn',
+        'warning',
         '[WS] ',
         'No hay token, no se conecta WebSocket',
       );
@@ -86,12 +86,12 @@ export const useSocket = (): {
         '[WS] ',
         `Conectado — Socket ID: ${socket.id}`,
       );
-      setSocketState({ connected: true, socketId: socket.id });
+      setSocketState({ connected: true, socketId: socket.id ?? null });
       reconnectAttemptRef.current = 0;
     });
 
     socket.on('disconnect', (reason) => {
-      logConsole(configLogs, 'warn', '[WS] ', `Desconectado: ${reason}`);
+      logConsole(configLogs, 'warning', '[WS] ', `Desconectado: ${reason}`);
       setSocketState({ connected: false, socketId: null });
     });
 

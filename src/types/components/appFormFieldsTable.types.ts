@@ -51,7 +51,7 @@ export interface AdditionalFields {
 
 export interface PostResponse {
   data: string;
-  permission: string;
+  permission?: string;
 }
 
 export interface AppFormFieldsTableProps {

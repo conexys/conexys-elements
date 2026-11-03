@@ -9,18 +9,9 @@
 
 import { deleteservice } from './deleteService';
 import { Uservalidationerror } from '../components/index';
-import SweetAlert2 from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
-import axios from 'axios';
-import type { AxiosError, AxiosResponse } from 'axios';
+import type { AxiosError } from 'axios';
 import { getOrSetFingerprint } from '../shared/baseFingerprintService';
-import { authStorage } from '../utilities/authStorage';
 import { logConsole } from '../utilities/logConsole';
-import type {
-  FormItem,
-  DataConverted,
-  RenderResponse,
-} from '../types/services/postServiceExtended.types';
 import { useConexysConfig } from '../config/ConexysConfig';
 
 const handleError = (

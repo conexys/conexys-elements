@@ -6,13 +6,12 @@
  * @version 0.3.0
  */
 
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from 'material-react-table';
 import type {
-  MRT_ColumnDef,
   MRT_PaginationState,
   MRT_ColumnFiltersState,
   MRT_VisibilityState,

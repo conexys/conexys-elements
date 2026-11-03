@@ -7,8 +7,7 @@
  * @version 0.4.0
  */
 
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { Url } from '../constants/global';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RenderForm } from './index';
 import useCustomForm from '../hooks/FormHooksNormal';
@@ -71,24 +70,9 @@ export default function AppFormFieldsTable({
   //GET DATA FORM (reads the data stored in the backend database)
   const authTokens: string = authStorage.getAuthToken(configLogs) || '';
   const authTokensSes: string = authStorage.getSessionId(configLogs) || '';
-  const xSessionType = authStorage.getSessionTypeValue(configLogs);
 
-  const config = useMemo(
-    () => ({
-      headers: {
-        Authorization: `Bearer ${authTokens}`,
-        'X-Session-ID': authTokensSes,
-        'X-Fingerprint': fpHash,
-        'X-Session-Type': xSessionType,
-        'Content-Type': 'application/json',
-      },
-    }),
-    [authTokens, authTokensSes, fpHash],
-  );
-
-  const getURL: string = Url + (postURL || '');
   const [post, setPost] = useState<PostResponse | null>(null);
-  const [error, setError] = useState<boolean>(false);
+  const [, setError] = useState<boolean>(false);
 
   const fetchData = useCallback(async (): Promise<void> => {
     try {
@@ -212,12 +196,12 @@ export default function AppFormFieldsTable({
 
   if (permission === true) {
     if (show === 'admin') {
-      permissionstatus = parseInt(post.permission);
+      permissionstatus = parseInt(post.permission ?? '');
     } else {
       if (post.permission === '1' || post.permission === '2') {
         permissionstatus = 3;
       } else {
-        permissionstatus = parseInt(post.permission);
+        permissionstatus = parseInt(post.permission ?? '');
       }
     }
   } else {
