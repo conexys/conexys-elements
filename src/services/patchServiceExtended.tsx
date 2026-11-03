@@ -51,12 +51,13 @@ const servicePatch2 = async (
   setMessageerror: (message: string) => void,
   setLoading: (value: boolean) => void,
   configLogs?: ReturnType<typeof useConexysConfig> | null,
-  ...rest: any[]
+  payload?: Record<string, any>,
+  onNotFound?: () => void,
 ): Promise<void> => {
   const visitorIdHash: string = await getOrSetFingerprint(fpHash);
   try {
     const requestData = {
-      ...rest[0],
+      ...(payload || {}),
       sessionID,
       cxauthxc,
       postServerURL: patchURL,
@@ -73,6 +74,8 @@ const servicePatch2 = async (
     setIsError(false);
   } catch (err) {
     setError(true);
+    // Surface 404s explicitly so views can show their own not-found page.
+    if ((err as AxiosError)?.response?.status === 404) onNotFound?.();
     handleError(err as AxiosError, t, configLogs, setIsError, setMessageerror);
   } finally {
     setLoading(false);
