@@ -386,6 +386,10 @@ const serviceLogout = async (
     );
 
     authStorage.removeAuthData(configLogs);
+    // `datauser` belongs to the session that just ended. Leaving it behind
+    // pinned the UI to the old account language and broke the language
+    // selector on the login/register/forgot-password pages.
+    localStorage.removeItem('datauser');
 
     if (userLanguage) localStorage.setItem('userLanguage', userLanguage);
     if (displaymode) localStorage.setItem('displaymode', displaymode);
