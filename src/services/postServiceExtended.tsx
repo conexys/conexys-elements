@@ -76,7 +76,7 @@ const servicePostBasic = async (
     setData(response.data);
   } catch (error) {
     logConsole(configLogs, 'error', '', error);
-    console.error(error);
+    console.error('Request failed:', (error as any)?.message || 'unknown error');
   }
 };
 
@@ -115,7 +115,7 @@ const serviceData = async (
     }
   } catch (err) {
     logConsole(configLogs, 'error', 'Error fetching data:', err);
-    console.error('Error fetching data:', err);
+    console.error('Error fetching data:', (err as any)?.message || err);
   }
 };
 
@@ -173,7 +173,7 @@ const servicePost = async (
       setPost(response.data);
     } catch (error) {
       logConsole(configLogs, 'error', '', error);
-      console.error(error);
+      console.error('Request failed:', (error as any)?.message || 'unknown error');
     }
   }
 };
@@ -309,7 +309,7 @@ const servicePostData = async (
       setPost(response.data);
     } catch (error) {
       logConsole(configLogs, 'error', '', error);
-      console.error(error);
+      console.error('Request failed:', (error as any)?.message || 'unknown error');
     }
   }
 };
