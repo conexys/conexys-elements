@@ -68,7 +68,7 @@ export const postservice = async (
     return response.data;
   } catch (error) {
     logConsole(configLogs, 'error', 'Error posting form data:', error);
-    console.error('Error posting form data:', error);
+    console.error('Error posting form data:', (error as any)?.message || error);
     throw error;
   }
 };
