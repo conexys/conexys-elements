@@ -17,6 +17,7 @@ import type { AxiosError, AxiosResponse } from 'axios';
 import { getOrSetFingerprint } from '../shared/baseFingerprintService';
 import { authStorage } from '../utilities/authStorage';
 import { logConsole } from '../utilities/logConsole';
+import { sanitizeHtml } from '../utilities/sanitizeHtml';
 import type {
   FormItem,
   DataConverted,
@@ -399,7 +400,7 @@ const serviceLogout = async (
   } catch (err) {
     const errorMessage: string = handleError(err as AxiosError, t, configLogs);
     MySwal.fire({
-      title: `<p>${errorMessage}</p>`,
+      title: sanitizeHtml(errorMessage),
       icon: 'error',
       confirmButtonText: 'OK',
     });
