@@ -19,6 +19,7 @@ import { Uservalidationerror } from '../components/index';
 import { getOrSetFingerprint } from '../shared/baseFingerprintService';
 import { authStorage } from '../utilities/authStorage';
 import { logConsole } from '../utilities/logConsole';
+import { sanitizeHtml } from '../utilities/sanitizeHtml';
 import type {
   PostFormServiceParams,
   UseCustomFormReturn,
@@ -146,8 +147,14 @@ const useCustomForm = (
         confirmButtonText: t('general.ok'),
       });
     } else if (err.response?.status === 400) {
+      // Analisis004 T6-1bis: show the server's clear validation message.
+      const raw = (err.response as any)?.data?.message;
+      const message =
+        typeof raw === 'string' && raw.trim()
+          ? raw
+          : t('login.command_not_found');
       MySwal.fire({
-        title: `<p>${t('login.command_not_found')}</p>`,
+        title: sanitizeHtml(message),
         icon: 'error',
         confirmButtonText: t('general.ok'),
       });
