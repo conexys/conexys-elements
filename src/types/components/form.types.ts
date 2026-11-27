@@ -335,6 +335,11 @@ interface SwitchBlock {
   ref?: string;
   value?: string;
   referred?: boolean;
+  /**
+   * Analisis004 T6-1ter: el switch debe notificar el cambio al formulario.
+   * Recibe un evento con `name`/`id` y `value` ya normalizado a "true"/"false".
+   */
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface SwitchProps {

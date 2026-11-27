@@ -6,6 +6,7 @@
  * @version 0.3.0
  */
 
+import { extractApiMessage } from '../utilities/apiErrorMessage';
 import { useState } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
 import SweetAlert2 from 'sweetalert2';
@@ -214,8 +215,12 @@ const useCustomForm = (
         confirmButtonText: t('general.ok'),
       });
     } else if (err.response?.status === 400) {
+      // Analisis004 T6-1ter: ValidationPipe devuelve `message` como array.
+      const serverMessage =
+        extractApiMessage((err.response as any)?.data?.message) ||
+        t('login.command_not_found');
       MySwal.fire({
-        title: `<p>${t('login.command_not_found')}</p>`,
+        title: sanitizeHtml(serverMessage),
         icon: 'error',
         confirmButtonText: t('general.ok'),
       });

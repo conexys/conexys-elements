@@ -29,18 +29,28 @@ const Switch: React.FC<SwitchProps> = ({ block }) => {
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>): void => {
-      setChecked(event.target.checked);
+      const isChecked = event.target.checked;
+      setChecked(isChecked);
       // Hide or show components according to selected value
       if (block.referred) {
         const elements = document.querySelectorAll(`.${block.name}`);
         elements.forEach((element) => {
-          (element as HTMLElement).style.display = event.target.checked
-            ? 'block'
-            : 'none';
+          (element as HTMLElement).style.display = isChecked ? 'block' : 'none';
         });
       }
+
+      // Analisis004 T6-1ter: notify the form state, with the checked state as
+      // a "true"/"false" string so conditional fields can react to it.
+      // El formulario sólo consume name/id/value del evento.
+      block.onChange?.({
+        target: {
+          name: block.name,
+          id: block.id,
+          value: isChecked ? 'true' : 'false',
+        },
+      } as unknown as React.ChangeEvent<HTMLInputElement>);
     },
-    [block.name, block.referred],
+    [block.name, block.id, block.referred, block.onChange],
   );
 
   return (
