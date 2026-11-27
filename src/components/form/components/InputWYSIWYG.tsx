@@ -6,10 +6,11 @@
  * @version 0.3.0
  */
 
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import JoditEditor from 'jodit-react';
 import { useTranslation } from 'react-i18next';
 import type { InputWYSIWYGProps } from '../../../types/components/form.types';
+import { sanitizeHtml } from '../../../utilities/sanitizeHtml';
 
 /**
  * inputwysiwyg component for rendering a JoditEditor for text input.
@@ -27,8 +28,15 @@ const InputWYSIWYG: React.FC<InputWYSIWYGProps> = React.memo(
   ({ block }) => {
     const [t] = useTranslation('global');
 
-    const [textEditor, setTextEditor] = useState<string>(block.value || '');
+    // Analisis004 06/A4-04 (T6-3): sanitize when entering the editor and when
+    // saving; output sanitization alone is not enough with iframe:false.
+    const safeValue = useMemo(() => sanitizeHtml(block.value || ''), [block.value]);
+    const [textEditor, setTextEditor] = useState<string>(safeValue);
     const editor = useRef<any>(null);
+
+    useEffect(() => {
+      setTextEditor(safeValue);
+    }, [safeValue]);
 
     const config = useMemo(
       () => ({
@@ -91,7 +99,7 @@ const InputWYSIWYG: React.FC<InputWYSIWYGProps> = React.memo(
     );
 
     const handleBlur = useCallback((newContent: string): void => {
-      setTextEditor(newContent);
+      setTextEditor(sanitizeHtml(newContent));
     }, []);
 
     return (
@@ -101,12 +109,12 @@ const InputWYSIWYG: React.FC<InputWYSIWYGProps> = React.memo(
           type="hidden"
           id={block.id}
           name={block.name}
-          value={textEditor || block.value || ''}
+          value={sanitizeHtml(textEditor || block.value || '')}
         />
         <div>
           <JoditEditor
             ref={editor}
-            value={block.value || ''}
+            value={safeValue}
             config={config}
             tabIndex={1} // tabIndex of textarea
             onBlur={handleBlur} // preferred to use only this option to update the content for performance reasons
